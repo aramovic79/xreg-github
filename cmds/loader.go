@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -69,9 +68,9 @@ func LoadAPIGuru(reg *registry.Registry, orgName string, repoName string) *regis
 	if err != nil {
 		log.Fatalf("Error getting current working directory: %s", err)
 	}
-	tarPath := filepath.Join(wd, "../misc/repo.tar")
+	tarPath := filepath.Join(filepath.Dir(wd), "misc", "repo.tar")
 
-	buf, err := ioutil.ReadFile(tarPath)
+	buf, err := os.ReadFile(tarPath)
 
 	if err != nil {
 		log.Fatalf("Can't load 'misc/repo.tar': %s", err)
