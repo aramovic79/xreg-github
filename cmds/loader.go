@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -64,7 +65,14 @@ func LoadAPIGuru(reg *registry.Registry, orgName string, repoName string) *regis
 		defer tarStream.Close()
 	*/
 
-	buf, err := ioutil.ReadFile("misc/repo.tar")
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("Error getting current working directory: %s", err)
+	}
+	tarPath := filepath.Join(wd, "../misc/repo.tar")
+
+	buf, err := ioutil.ReadFile(tarPath)
+
 	if err != nil {
 		log.Fatalf("Can't load 'misc/repo.tar': %s", err)
 	}

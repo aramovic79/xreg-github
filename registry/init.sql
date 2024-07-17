@@ -245,7 +245,8 @@ JOIN Versions AS v ON (p.EntitySID=v.SID)
 JOIN Resources AS r ON (r.SID=v.ResourceSID)
 JOIN Props AS p1 ON (p1.EntitySID=r.SID)
 WHERE p1.PropName='defaultVersionId,' AND v.UID=p1.PropValue AND
-      p.PropName<>'id,' ;     # Don't overwrite this
+      p.PropName<>'id,' ;     
+# Do not overwrite this
 # NOTE!!! if DB_IN changes then the above 2 lines MUST change
 # TODO move the creation of this into the code then we can dynamically
 # use DB_IN instead of hard-coding the "," in here
@@ -302,7 +303,8 @@ JOIN ModelEntities AS rm ON (rm.SID=r.ModelSID) ;
 CREATE VIEW AllProps AS
 SELECT * FROM Props
 UNION SELECT * FROM DefaultProps
-UNION SELECT                    # Add in "isdefault", which is calculated
+UNION SELECT                    
+# Add in "isdefault", which is calculated
   v.RegSID,
   v.eSID,
   'isdefault,',

@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
 	// log "github.com/duglin/dlog"
-	"github.com/spf13/cobra"
 )
 
 var worked = true
-var Verbose = EnvBool("XR_VERBOSE", false)
+
+// var Verbose = EnvBool("XR_VERBOSE", false)
 var Server = EnvString("XR_SERVER", "")
 
 func EnvBool(name string, def bool) bool {
@@ -48,23 +47,23 @@ func Error(str string, args ...any) {
 	os.Exit(1)
 }
 
-func main() {
-	xrCmd := &cobra.Command{
-		Use:   "xr",
-		Short: "xRegistry CLI",
-	}
-	xrCmd.CompletionOptions.HiddenDefaultCmd = true
-	xrCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false,
-		"Chatty?")
-	xrCmd.PersistentFlags().StringVarP(&Server, "server", "s", Server,
-		"URL to server")
+// func main() {
+// 	xrCmd := &cobra.Command{
+// 		Use:   "xr",
+// 		Short: "xRegistry CLI",
+// 	}
+// 	xrCmd.CompletionOptions.HiddenDefaultCmd = true
+// 	xrCmd.PersistentFlags().BoolbVarP(&Verbose, "verbose", "v", false,
+// 		"Chatty?")
+// 	xrCmd.PersistentFlags().StringVarP(&Server, "server", "s", Server,
+// 		"URL to server")
 
-	addModelCmd(xrCmd)
-	addRegistryCmd(xrCmd)
-	addGroupCmd(xrCmd)
+// 	addModelCmd(xrCmd)
+// 	addRegistryCmd(xrCmd)
+// 	addGroupCmd(xrCmd)
 
-	if err := xrCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err)
-		os.Exit(1)
-	}
-}
+// 	if err := xrCmd.Execute(); err != nil {
+// 		fmt.Fprintf(os.Stderr, "%s\n", err)
+// 		os.Exit(1)
+// 	}
+// }

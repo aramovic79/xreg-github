@@ -80,9 +80,9 @@ func modelVerifyFunc(cmd *cobra.Command, args []string) {
 	}
 
 	for _, fileName := range args {
-		if Verbose {
-			fmt.Printf("%s:\n", fileName)
-		}
+		// if Verbose {
+		// 	fmt.Printf("%s:\n", fileName)
+		// }
 		if strings.HasPrefix(fileName, "http") {
 			res, err := http.Get(fileName)
 			if err == nil {
