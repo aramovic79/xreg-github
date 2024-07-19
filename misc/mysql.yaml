@@ -1,26 +1,44 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
+  namespace: ingress-nginx
+  name: mysql
   labels:
     run: mysql
-  name: mysql
 spec:
-  containers:
-  - image: mysql
-    imagePullPolicy: IfNotPresent
-    name: mysql
-    ports:
-    - containerPort: 3306
-      protocol: TCP
-    env:
-    - name: MYSQL_ROOT_PASSWORD
-      value: password
+  replicas: 1
+  selector:
+    matchLabels:
+      run: mysql
+  template:
+    metadata:
+      labels:
+        run: mysql
+    spec:
+      containers:
+      - image: mysql
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        - name: MYSQL_DATABASE
+          value: registry
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          timeoutSeconds: 2
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: ingress-nginx
   name: mysql
 spec:
   ports:
