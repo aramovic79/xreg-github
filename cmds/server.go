@@ -35,6 +35,9 @@ func InitDB() {
 		firstTimeDB = false
 	}
 
+	// To be reverted.
+	registry.DeleteDB(DBName)
+
 	if !registry.DBExists(DBName) {
 		registry.CreateDB(DBName)
 	}
@@ -52,15 +55,15 @@ func InitDB() {
 	}
 
 	if reg == nil {
-		reg = LoadDirsSample(reg)
-		LoadEndpointsSample(nil)
-		LoadMessagesSample(nil)
-		LoadSchemasSample(nil)
-		LoadAPIGuru(nil, "APIs-guru", "openapi-directory")
-		LoadDocStore(nil)
-		if os.Getenv("XR_LOAD_LARGE") != "" {
-			go LoadLargeSample(nil)
-		}
+		reg = LoadOrdSample(reg)
+		// LoadEndpointsSample(nil)
+		// LoadMessagesSample(nil)
+		// LoadSchemasSample(nil)
+		// LoadAPIGuru(nil, "APIs-guru", "openapi-directory")
+		// LoadDocStore(nil)
+		// if os.Getenv("XR_LOAD_LARGE") != "" {
+		// 	go LoadLargeSample(nil)
+		// }
 	}
 
 	if reg == nil {

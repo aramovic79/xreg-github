@@ -638,3 +638,97 @@ func LoadDocStore(reg *registry.Registry) *registry.Registry {
 	reg.Commit()
 	return reg
 }
+
+func LoadOrdSample(reg *registry.Registry) *registry.Registry {
+	var err error
+	log.VPrintf(1, "Loading registry '%s'", "sap:foo registry")
+	if reg == nil {
+		reg, err = registry.FindRegistry(nil, "SapFooRegistry")
+		ErrFatalf(err)
+		if reg != nil {
+			reg.Rollback()
+			return reg
+		}
+
+		reg, err = registry.NewRegistry(nil, "SapFooRegistry")
+		ErrFatalf(err, "Error creating new registry: %s", err)
+		defer reg.Rollback()
+
+		ErrFatalf(reg.SetSave("specversion", "0.5"))
+		// ErrFatalf(reg.SetSave("#baseURL", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json"))
+		ErrFatalf(reg.SetSave("name", "SapFooRegistry"))
+		ErrFatalf(reg.SetSave("description", "Example based on ORD Reference App"))
+		ErrFatalf(reg.SetSave("documentation", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/document-api"))
+		ErrFatalf(reg.SetSave("labels.schema", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json"))
+		ErrFatalf(reg.SetSave("labels.openResourceDiscovery", "1.9"))
+		ErrFatalf(reg.SetSave("labels.policyLevel", "sap:core:v1"))
+	}
+
+	// gmProducts, err := reg.Model.AddGroupModel("products", "product")
+	// ErrFatalf(err)
+
+	// gmPackages, err := reg.Model.AddGroupModel("packages", "package")
+	// ErrFatalf(err)
+
+	// gmBundles, err := reg.Model.AddGroupModel("consumptionbundles", "consumptionbundle")
+	// ErrFatalf(err)
+
+	// gmApiResources, err := reg.Model.AddGroupModel("apiresources", "apiresource")
+	// ErrFatalf(err)
+
+	// gmEventResources, err := reg.Model.AddGroupModel("eventresources", "eventresource")
+	// ErrFatalf(err)
+
+	// gmCapabilities, err := reg.Model.AddGroupModel("capabilities", "capabilitie")
+	// ErrFatalf(err)
+
+	// gmGroups, err := reg.Model.AddGroupModel("groups", "group")
+	// ErrFatalf(err)
+
+	// gmGroupTypes, err := reg.Model.AddGroupModel("grouptypes", "grouptype")
+	// ErrFatalf(err)
+
+	// gmTombstones, err := reg.Model.AddGroupModel("tombstones", "tombstone")
+	// ErrFatalf(err)
+
+	_, err = reg.Model.AddAttr("albin", registry.URL)
+
+	ErrFatalf(reg.SetSave("albin", "Ramovic"))
+
+	// ErrFatalf(reg.Model.Set.SetSave("type", "openapi-v3"))
+	gmApiResources, err := reg.Model.AddGroupModel("apiresources", "apiresource")
+	gApiResource, err := reg.AddGroup("apiresources", "sap.foo:apiResource:astronomy:v1")
+	rmApiResource, err := gmApiResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, true)
+	rd, err := gApiResource.AddResource("resourcedefinitions", "/ord/metadata/astronomy-v1.oas3.json", "v1")
+
+	ErrFatalf(reg.Model.Verify())
+
+	ErrFatalf(gApiResource.SetSave("labels.title", "Astronomy API"))
+	ErrFatalf(gApiResource.SetSave("labels.shortdescription", "The API allows you to discover..."))
+	ErrFatalf(gApiResource.SetSave("labels.description", "A longer description of this API with **markdown** \n## headers\n etc..."))
+	ErrFatalf(gApiResource.SetSave("labels.version", "1.0.3"))
+	ErrFatalf(gApiResource.SetSave("labels.visibility", "public"))
+	ErrFatalf(gApiResource.SetSave("labels.releasestatus", "active"))
+	ErrFatalf(gApiResource.SetSave("labels.systeminstanceaware", "false"))
+	ErrFatalf(gApiResource.SetSave("labels.policylevel", "custom"))
+	ErrFatalf(gApiResource.SetSave("labels.custompolicylevel", "sap.foo:custom:v1"))
+	ErrFatalf(gApiResource.SetSave("labels.partofpackage", "sap.foo:package:ord-reference-app:v1"))
+	// ErrFatalf(gApiResource.SetSave("labels.partofconsumptionbundles", []))
+	// ErrFatalf(gApiResource.SetSave("labels.partOfGroups", []))
+	ErrFatalf(gApiResource.SetSave("labels.apiprotocol", "rest"))
+	// ErrFatalf(gApiResource.SetSave("labels.apiresourcelinks", []))
+
+	_, err = rmApiResource.AddAttr("type", registry.STRING)
+	_, err = rmApiResource.AddAttr("mediatype", registry.STRING)
+	_, err = rmApiResource.AddAttr("url", registry.STRING)
+	_, err = rmApiResource.AddAttrArray("accessstrategies", registry.NewItemType(registry.OBJECT))
+	ErrFatalf(err)
+
+	ErrFatalf(rd.SetSave("type", "openapi-v3"))
+	ErrFatalf(rd.SetSave("mediatype", "application/json"))
+	ErrFatalf(rd.SetSave("url", "/ord/metadata/astronomy-v1.oas3.json"))
+	// ErrFatalf(r.SetSave("accessstrategies", []interface{}{map[string]interface{}{"type": "open"}}))
+
+	reg.Commit()
+	return reg
+}
