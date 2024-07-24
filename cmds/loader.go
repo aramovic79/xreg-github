@@ -641,10 +641,11 @@ func LoadDocStore(reg *registry.Registry) *registry.Registry {
 
 func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	var err error
-	log.VPrintf(1, "Loading registry '%s'", "sap:foo registry")
+	log.VPrintf(1, "Loading registry '%s'", "sap.foo registry")
 	if reg == nil {
 		reg, err = registry.FindRegistry(nil, "SapFooRegistry")
 		ErrFatalf(err)
+
 		if reg != nil {
 			reg.Rollback()
 			return reg
@@ -652,82 +653,349 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 
 		reg, err = registry.NewRegistry(nil, "SapFooRegistry")
 		ErrFatalf(err, "Error creating new registry: %s", err)
+
 		defer reg.Rollback()
 
+		// registry root attributes + ORD mandatory attributes; have to be lower case.
 		ErrFatalf(reg.SetSave("specversion", "0.5"))
-		// ErrFatalf(reg.SetSave("#baseURL", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json"))
-		ErrFatalf(reg.SetSave("name", "SapFooRegistry"))
+		ErrFatalf(reg.SetSave("id", "SapFooRegistry"))
 		ErrFatalf(reg.SetSave("description", "Example based on ORD Reference App"))
-		ErrFatalf(reg.SetSave("documentation", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/document-api"))
-		ErrFatalf(reg.SetSave("labels.schema", "https://sap.github.io/open-resource-discovery/spec-v1/interfaces/Document.schema.json"))
-		ErrFatalf(reg.SetSave("labels.openResourceDiscovery", "1.9"))
-		ErrFatalf(reg.SetSave("labels.policyLevel", "sap:core:v1"))
+
+		_, err = reg.Model.AddAttr("openresourcediscovery", registry.STRING)
+		ErrFatalf(reg.SetSave("openresourcediscovery", "1.9"))
+		ErrFatalf(err)
+
+		_, err = reg.Model.AddAttr("policylevel", registry.STRING)
+		ErrFatalf(reg.SetSave("policylevel", "sap:core:v1"))
+		ErrFatalf(err)
 	}
 
-	// gmProducts, err := reg.Model.AddGroupModel("products", "product")
-	// ErrFatalf(err)
-
-	// gmPackages, err := reg.Model.AddGroupModel("packages", "package")
-	// ErrFatalf(err)
-
-	// gmBundles, err := reg.Model.AddGroupModel("consumptionbundles", "consumptionbundle")
-	// ErrFatalf(err)
-
-	// gmApiResources, err := reg.Model.AddGroupModel("apiresources", "apiresource")
-	// ErrFatalf(err)
-
-	// gmEventResources, err := reg.Model.AddGroupModel("eventresources", "eventresource")
-	// ErrFatalf(err)
-
-	// gmCapabilities, err := reg.Model.AddGroupModel("capabilities", "capabilitie")
-	// ErrFatalf(err)
-
-	// gmGroups, err := reg.Model.AddGroupModel("groups", "group")
-	// ErrFatalf(err)
-
-	// gmGroupTypes, err := reg.Model.AddGroupModel("grouptypes", "grouptype")
-	// ErrFatalf(err)
-
-	// gmTombstones, err := reg.Model.AddGroupModel("tombstones", "tombstone")
-	// ErrFatalf(err)
-
-	_, err = reg.Model.AddAttr("albin", registry.URL)
-
-	ErrFatalf(reg.SetSave("albin", "Ramovic"))
-
-	// ErrFatalf(reg.Model.Set.SetSave("type", "openapi-v3"))
-	gmApiResources, err := reg.Model.AddGroupModel("apiresources", "apiresource")
-	gApiResource, err := reg.AddGroup("apiresources", "sap.foo:apiResource:astronomy:v1")
-	rmApiResource, err := gmApiResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, true)
-	rd, err := gApiResource.AddResource("resourcedefinitions", "/ord/metadata/astronomy-v1.oas3.json", "v1")
-
-	ErrFatalf(reg.Model.Verify())
-
-	ErrFatalf(gApiResource.SetSave("labels.title", "Astronomy API"))
-	ErrFatalf(gApiResource.SetSave("labels.shortdescription", "The API allows you to discover..."))
-	ErrFatalf(gApiResource.SetSave("labels.description", "A longer description of this API with **markdown** \n## headers\n etc..."))
-	ErrFatalf(gApiResource.SetSave("labels.version", "1.0.3"))
-	ErrFatalf(gApiResource.SetSave("labels.visibility", "public"))
-	ErrFatalf(gApiResource.SetSave("labels.releasestatus", "active"))
-	ErrFatalf(gApiResource.SetSave("labels.systeminstanceaware", "false"))
-	ErrFatalf(gApiResource.SetSave("labels.policylevel", "custom"))
-	ErrFatalf(gApiResource.SetSave("labels.custompolicylevel", "sap.foo:custom:v1"))
-	ErrFatalf(gApiResource.SetSave("labels.partofpackage", "sap.foo:package:ord-reference-app:v1"))
-	// ErrFatalf(gApiResource.SetSave("labels.partofconsumptionbundles", []))
-	// ErrFatalf(gApiResource.SetSave("labels.partOfGroups", []))
-	ErrFatalf(gApiResource.SetSave("labels.apiprotocol", "rest"))
-	// ErrFatalf(gApiResource.SetSave("labels.apiresourcelinks", []))
-
-	_, err = rmApiResource.AddAttr("type", registry.STRING)
-	_, err = rmApiResource.AddAttr("mediatype", registry.STRING)
-	_, err = rmApiResource.AddAttr("url", registry.STRING)
-	_, err = rmApiResource.AddAttrArray("accessstrategies", registry.NewItemType(registry.OBJECT))
+	// adding group(group itself and model) products
+	gmProducts, err := reg.Model.AddGroupModel("products", "product")
 	ErrFatalf(err)
 
+	gProduct, err := reg.AddGroup("products", "sap.foo:product:ord-reference-app:v0")
+	ErrFatalf(err)
+
+	// products(groups) attributes
+	_, err = gmProducts.AddAttr("*", registry.STRING)
+	ErrFatalf(gProduct.SetSave("ordid", "sap.foo:product:ord-reference-app:v0"))
+	ErrFatalf(gProduct.SetSave("title", "ORD Reference App"))
+	ErrFatalf(gProduct.SetSave("vendor", "sap:vendor:SAP:"))
+	ErrFatalf(gProduct.SetSave("shortdescription", "Open Resource Discovery Reference Application"))
+	ErrFatalf(err)
+
+	// adding group(group itself and model) packages
+	gmPackages, err := reg.Model.AddGroupModel("packages", "package")
+	ErrFatalf(err)
+	gPackage, err := reg.AddGroup("packages", "sap.foo:package:ord-reference-app:v0")
+	ErrFatalf(err)
+
+	// packages(groups) attributes
+	_, err = gmPackages.AddAttr("ordid", registry.STRING)
+	ErrFatalf(gPackage.SetSave("ordid", "sap.foo:package:ord-reference-app:v0"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("title", registry.STRING)
+	ErrFatalf(gPackage.SetSave("title", "Open Resource Discovery Reference Application"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("shortdescription", registry.STRING)
+	ErrFatalf(gPackage.SetSave("shortdescription", "This is a reference application for the Open Resource Discovery standard"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("description", registry.STRING)
+	ErrFatalf(gPackage.SetSave("description", "This reference application demonstrates how Open Resource Discovery (ORD) can be implemented, demonstrating different resources and discovery aspects"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("version", registry.STRING)
+	ErrFatalf(gPackage.SetSave("version", "0.3.0"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("policylevel", registry.STRING)
+	ErrFatalf(gPackage.SetSave("policylevel", "sap:core:v1"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttrArray("partofproducts", registry.NewItemType(registry.STRING))
+	ErrFatalf(gPackage.SetSave("partofproducts[0]", "sap.foo:product:ord-reference-app:"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttr("vendor", registry.STRING)
+	ErrFatalf(gPackage.SetSave("vendor", "sap:vendor:SAP:"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttrArray("tags", registry.NewItemType(registry.STRING))
+	ErrFatalf(gPackage.SetSave("tags[0]", "reference application"))
+	ErrFatalf(err)
+
+	// NOTE: "labels" in ORD specification is of type array<string>, whilst in xRegistry it is string !
+	_, err = gmPackages.AddAttrMap("labels", registry.NewItemArray(registry.NewItemType(registry.STRING)))
+	ErrFatalf(gPackage.SetSave("labels.customLabel[0]", "labels are more flexible than tags as you can define your own keys"))
+	ErrFatalf(err)
+
+	_, err = gmPackages.AddAttrMap("documentationlabels", registry.NewItemArray(registry.NewItemType(registry.STRING)))
+	// NOTE: In original ORD document, the key has value "Some Aspect"(with space!) which is not allowed
+	ErrFatalf(gPackage.SetSave("documentationlabels.SomeAspect[0]", "Markdown Documentation [with links](#)"))
+	ErrFatalf(gPackage.SetSave("documentationlabels.SomeAspect[1]", "With multiple values"))
+	ErrFatalf(err)
+
+	// adding group(group itself and model) consumptionbundles
+	gmConsumptionBundles, err := reg.Model.AddGroupModel("consumptionbundles", "consumptionbundle")
+	ErrFatalf(err)
+	gConsumptionBundle, err := reg.AddGroup("consumptionbundles", "sap.foo:consumptionBundle:noAuth:v1")
+	ErrFatalf(err)
+	// // consumptionBundles(groups) attributes
+	_, err = gmConsumptionBundles.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+	ErrFatalf(gConsumptionBundle.SetSave("ordid", "sap.foo:consumptionBundle:noAuth:v1"))
+	ErrFatalf(gConsumptionBundle.SetSave("shortdescription", "Bundle of unprotected resources"))
+	ErrFatalf(gConsumptionBundle.SetSave("description", "This Consumption Bundle contains all resources of the reference app which are unprotected and do not require authentication"))
+	ErrFatalf(gConsumptionBundle.SetSave("version", "1.0.0"))
+	// QUESTION: There is already field modifiedat automatically attached, is the lastUpdate redundant then?
+	ErrFatalf(gConsumptionBundle.SetSave("lastUpdate", "2022-12-19T15:47:04+00:00"))
+
+	// adding group(group itself and model) apiResources
+	gmApiResources, err := reg.Model.AddGroupModel("apiresources", "apiresource")
+	ErrFatalf(err)
+	gApiResource, err := reg.AddGroup("apiresources", "sap.foo:apiResource:astronomy:v1")
+	ErrFatalf(err)
+
+	// apiResources(groups) attributes
+	_, err = gmApiResources.AddAttr("ordid", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("ordid", "sap.foo:apiResource:astronomy:v1"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("title", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("title", "Astronomy API"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("shortdescription", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("shortdescription", "The API allows you to discover..."))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("description", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("description", "A longer description of this API with **markdown** \n## headers\n etc..."))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("version", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("version", "1.0.3"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("visibility", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("visibility", "public"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("releasestatus", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("releasestatus", "active"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("systeminstanceaware", registry.BOOLEAN)
+	ErrFatalf(gApiResource.SetSave("systeminstanceaware", false))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("policylevel", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("policylevel", "custom"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("custompolicylevel", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("custompolicylevel", "sap.foo:custom:v1"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("partofpackage", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("partofpackage", "sap.foo:package:ord-reference-app:v1"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttrArray("partofconsumptionbundles", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(gApiResource.SetSave("partofconsumptionbundles[0].ordId", "sap.foo:consumptionBundle:noAuth:v1"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttrArray("partofgroups", registry.NewItemType(registry.STRING))
+	ErrFatalf(gApiResource.SetSave("partofgroups[0]", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttr("apiprotocol", registry.STRING)
+	ErrFatalf(gApiResource.SetSave("apiprotocol", "rest"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttrArray("apiresourcelinks", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(gApiResource.SetSave("apiresourcelinks[0].type", "api-documentation"))
+	ErrFatalf(gApiResource.SetSave("apiresourcelinks[0].url", "/swagger-ui.html?urls.primaryName=Astronomy%20V1%20API"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttrArray("entrypoints", registry.NewItemType(registry.STRING))
+	ErrFatalf(gApiResource.SetSave("entrypoints[0]", "/astronomy/v1"))
+	ErrFatalf(err)
+	_, err = gmApiResources.AddAttrMap("extensible", registry.NewItemType(registry.STRING))
+	ErrFatalf(gApiResource.SetSave("extensible.supported", "no"))
+	ErrFatalf(err)
+	// adding resource to the apiResources group with name resourceDefinitions
+	rmApiResource, err := gmApiResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, false)
+	ErrFatalf(err)
+	rd, err := gApiResource.AddResource("resourcedefinitions", "*", "v1")
+	ErrFatalf(err)
+
+	// apiResources[0].resourceDefinitions(resource)
+	_, err = rmApiResource.AddAttr("type", registry.STRING)
 	ErrFatalf(rd.SetSave("type", "openapi-v3"))
+	ErrFatalf(err)
+	_, err = rmApiResource.AddAttr("mediatype", registry.STRING)
 	ErrFatalf(rd.SetSave("mediatype", "application/json"))
+	ErrFatalf(err)
+	_, err = rmApiResource.AddAttr("url", registry.STRING)
 	ErrFatalf(rd.SetSave("url", "/ord/metadata/astronomy-v1.oas3.json"))
-	// ErrFatalf(r.SetSave("accessstrategies", []interface{}{map[string]interface{}{"type": "open"}}))
+	ErrFatalf(err)
+	_, err = rmApiResource.AddAttrArray("accessstrategies", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(rd.SetSave("accessstrategies[0].type", "open"))
+	ErrFatalf(err)
+	// adding group(group itself and model) eventResources
+	gmEventResources, err := reg.Model.AddGroupModel("eventresources", "eventresource")
+	ErrFatalf(err)
+	gEventResource1, err := reg.AddGroup("eventresources", "sap.foo:eventResource:ExampleEventResource:v1")
+	ErrFatalf(err)
+	gEventResource2, err := reg.AddGroup("eventresources", "sap.foo:eventResource:BillingDocumentEvents:v1")
+	ErrFatalf(err)
+
+	// eventResources(groups) attributes
+	_, err = gmEventResources.AddAttr("ordid", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("title", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("shortdescription", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("description", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("version", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("lastupdate", registry.STRING) // QUESTION: Is this field redundant having in mind "modifiedat"?
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("releasestatus", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("partofpackage", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttr("visibility", registry.STRING)
+	ErrFatalf(err)
+	_, err = gmEventResources.AddAttrMap("extensible", registry.NewItemType(registry.STRING))
+	ErrFatalf(err)
+	// adding resource to the eventResources groups with name resourceDefinitions
+	rmEventResource, err := gmEventResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, false)
+	ErrFatalf(err)
+
+	_, err = rmEventResource.AddAttr("type", registry.STRING)
+	ErrFatalf(err)
+	_, err = rmEventResource.AddAttr("mediatype", registry.STRING)
+	ErrFatalf(err)
+	_, err = rmEventResource.AddAttr("url", registry.STRING)
+	ErrFatalf(err)
+	_, err = rmEventResource.AddAttrArray("accessstrategies", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(err)
+	// eventresources.eventResource1 group
+	ErrFatalf(gEventResource1.SetSave("ordid", "sap.foo:eventResource:ExampleEventResource:v1"))
+	ErrFatalf(gEventResource1.SetSave("title", "Event Example"))
+	ErrFatalf(gEventResource1.SetSave("shortdescription", "Simple Event Example"))
+	ErrFatalf(gEventResource1.SetSave("description", "Example long description"))
+	ErrFatalf(gEventResource1.SetSave("version", "1.2.1"))
+	ErrFatalf(gEventResource1.SetSave("lastupdate", "2022-12-19T15:47:04+00:00"))
+	ErrFatalf(gEventResource1.SetSave("releasestatus", "beta"))
+	ErrFatalf(gEventResource1.SetSave("partofpackage", "sap.foo:package:SomePackage:v1"))
+	ErrFatalf(gEventResource1.SetSave("visibility", "public"))
+	ErrFatalf(gEventResource1.SetSave("extensible.supported", "no"))
+
+	rde1, err := gEventResource1.AddResource("resourcedefinitions", "*", "v1")
+	ErrFatalf(err)
+	ErrFatalf(rde1.SetSave("type", "asyncapi-v2"))
+	ErrFatalf(rde1.SetSave("mediatype", "application/json"))
+	ErrFatalf(rde1.SetSave("url", "/some/path/asyncApi2.json"))
+	ErrFatalf(rde1.SetSave("accessstrategies[0].type", "open"))
+
+	// eventresources.eventResource2 group
+	ErrFatalf(gEventResource2.SetSave("ordid", "sap.foo:eventResource:BillingDocumentEvents:v1"))
+	ErrFatalf(gEventResource2.SetSave("title", "Billing Document Events"))
+	ErrFatalf(gEventResource2.SetSave("shortdescription", "Informs a remote system about created, changed, and canceled billing documents"))
+	ErrFatalf(gEventResource2.SetSave("description", "Billing document is an umbrella term for invoices, credit memos, debit memos, pro forma invoices, and their respective cancellation documents. The following events are available for billing document:\n      Billing document canceled\n      Billing document changed\n      Billing Document created"))
+	ErrFatalf(gEventResource2.SetSave("version", "1.0.0"))
+	ErrFatalf(gEventResource2.SetSave("lastupdate", "2022-12-19T15:47:04+00:00"))
+	ErrFatalf(gEventResource2.SetSave("releasestatus", "active"))
+	ErrFatalf(gEventResource2.SetSave("partofpackage", "sap.foo:package:SomePackage:v1"))
+	ErrFatalf(gEventResource2.SetSave("visibility", "public"))
+	ErrFatalf(gEventResource2.SetSave("extensible.supported", "no"))
+
+	rde2, err := gEventResource2.AddResource("resourcedefinitions", "*", "v1")
+	ErrFatalf(err)
+
+	ErrFatalf(rde2.SetSave("type", "asyncapi-v2"))
+	ErrFatalf(rde2.SetSave("mediatype", "application/json"))
+	ErrFatalf(rde2.SetSave("url", "/api/eventCatalog.json"))
+	ErrFatalf(rde2.SetSave("accessstrategies[0].type", "open"))
+
+	// adding group(group itself and model) capabilities
+	gmCapabilities, err := reg.Model.AddGroupModel("capabilities", "capability")
+	gCapability, err := reg.AddGroup("capabilities", "sap.foo.bar:capability:mdi:v1")
+
+	// capabilities(groups) attributes
+	_, err = gmCapabilities.AddAttr("ordid", registry.STRING)
+	ErrFatalf(gCapability.SetSave("ordid", "sap.foo.bar:capability:mdi:v1"))
+
+	_, err = gmCapabilities.AddAttr("title", registry.STRING)
+	ErrFatalf(gCapability.SetSave("title", "Master Data Integration Capability"))
+
+	_, err = gmCapabilities.AddAttr("type", registry.STRING)
+	ErrFatalf(gCapability.SetSave("type", "sap.mdo:mdi-capability:v1"))
+
+	_, err = gmCapabilities.AddAttr("shortdescription", registry.STRING)
+	ErrFatalf(gCapability.SetSave("shortdescription", "Short description of capability"))
+
+	_, err = gmCapabilities.AddAttr("description", registry.STRING)
+	ErrFatalf(gCapability.SetSave("description", "Optional, longer description"))
+
+	_, err = gmCapabilities.AddAttr("version", registry.STRING)
+	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
+
+	_, err = gmCapabilities.AddAttr("version", registry.STRING)
+	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
+
+	_, err = gmCapabilities.AddAttr("lastupdate", registry.STRING)
+	ErrFatalf(gCapability.SetSave("lastupdate", "2023-01-26T15:47:04+00:00"))
+
+	_, err = gmCapabilities.AddAttr("releasestatus", registry.STRING)
+	ErrFatalf(gCapability.SetSave("releasestatus", "active"))
+
+	_, err = gmCapabilities.AddAttr("visibility", registry.STRING)
+	ErrFatalf(gCapability.SetSave("visibility", "public"))
+
+	_, err = gmCapabilities.AddAttr("partofpackage", registry.STRING)
+	ErrFatalf(gCapability.SetSave("partofpackage", "sap.foo.bar:package:SomePackage:v1"))
+
+	_, err = gmCapabilities.AddAttrArray("definitions", registry.NewItemMap(registry.NewItemType(registry.ANY)))
+	ErrFatalf(gCapability.SetSave("definitions[0].type", "sap.mdo:mdi-capability-definition:v1"))
+	ErrFatalf(gCapability.SetSave("definitions[0].mediaType", "application/json"))
+	ErrFatalf(gCapability.SetSave("definitions[0].url", "/capabilities/foo.bar.json"))
+	ErrFatalf(gCapability.SetSave("definitions[0].accessStrategies[0].type", "open"))
+
+	ErrFatalf(err)
+
+	// adding group(group itself and model) "groups"
+	gmGroups, err := reg.Model.AddGroupModel("groups", "group")
+	ErrFatalf(err)
+	gGroup, err := reg.AddGroup("groups", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue")
+	ErrFatalf(err)
+	// "groups"(groups) attributes
+	_, err = gmGroups.AddAttr("*", registry.STRING)
+	ErrFatalf(gGroup.SetSave("groupid", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"))
+	ErrFatalf(gGroup.SetSave("grouptypeid", "sap.foo:groupTypeAbc"))
+	ErrFatalf(gGroup.SetSave("title", "Title of group assignment / instance"))
+
+	ErrFatalf(err)
+
+	// adding group(group itself and model) "groupTypes"
+	gmGroupTypes, err := reg.Model.AddGroupModel("grouptypes", "grouptype")
+	ErrFatalf(err)
+	gGroupType, err := reg.AddGroup("grouptypes", "sap.foo:groupTypeAbc")
+	ErrFatalf(err)
+	// "grouptypes"(groups) attributes
+	_, err = gmGroupTypes.AddAttr("*", registry.STRING)
+	ErrFatalf(gGroupType.SetSave("grouptypeid", "sap.foo:groupTypeAbc"))
+	ErrFatalf(gGroupType.SetSave("title", "Title of group type"))
+
+	ErrFatalf(err)
+
+	// adding group(group itself and model) "tombstones"
+	gmTombstones, err := reg.Model.AddGroupModel("tombstones", "tombstone")
+	ErrFatalf(err)
+	gTombstone, err := reg.AddGroup("tombstones", "sap.foo:apiResource:astronomy:v0")
+	ErrFatalf(err)
+	// "grouptypes"(groups) attributes
+	_, err = gmTombstones.AddAttr("*", registry.STRING)
+	ErrFatalf(gTombstone.SetSave("ordid", "sap.foo:apiResource:astronomy:v0"))
+	ErrFatalf(gTombstone.SetSave("removalDate", "2020-12-02T14:12:59Z"))
+
+	ErrFatalf(err)
+
+	ErrFatalf(reg.Model.Verify())
 
 	reg.Commit()
 	return reg
