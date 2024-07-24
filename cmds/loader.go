@@ -106,6 +106,7 @@ func LoadAPIGuru(reg *registry.Registry, orgName string, repoName string) *regis
 	g, err := reg.Model.AddGroupModel("apiproviders", "apiprovider")
 	ErrFatalf(err)
 	r, err := g.AddResourceModel("apis", "api", 2, true, true, true)
+	ErrFatalf(err)
 	_, err = r.AddAttr("format", registry.STRING)
 	ErrFatalf(err)
 
@@ -132,10 +133,10 @@ func LoadAPIGuru(reg *registry.Registry, orgName string, repoName string) *regis
 		}
 
 		// Just a subset for now
-		if strings.Index(header.Name, "/docker.com/") < 0 &&
-			strings.Index(header.Name, "/adobe.com/") < 0 &&
-			strings.Index(header.Name, "/fec.gov/") < 0 &&
-			strings.Index(header.Name, "/apiz.ebay.com/") < 0 {
+		if !strings.Contains(header.Name, "/docker.com/") &&
+			!strings.Contains(header.Name, "/adobe.com/") &&
+			!strings.Contains(header.Name, "/fec.gov/") &&
+			!strings.Contains(header.Name, "/apiz.ebay.com/") {
 			continue
 		}
 
@@ -276,6 +277,7 @@ func LoadDirsSample(reg *registry.Registry) *registry.Registry {
 	gm, err := reg.Model.AddGroupModel("dirs", "dir")
 	ErrFatalf(err)
 	rm, err := gm.AddResourceModel("files", "file", 2, true, true, true)
+	ErrFatalf(err)
 	_, err = rm.AddAttr("rext", registry.STRING)
 	ErrFatalf(err)
 	rm, err = gm.AddResourceModel("datas", "data", 2, true, true, false)
@@ -298,6 +300,7 @@ func LoadDirsSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(r.SetSave("rext", "a string"))
 
 	_, err = g.AddResource("datas", "d1", "v1")
+	ErrFatalf(err)
 
 	reg.Commit()
 	return reg
@@ -581,7 +584,7 @@ func LoadLargeSample(reg *registry.Registry) *registry.Registry {
 
 	ErrFatalf(reg.Model.Verify())
 	reg.Commit()
-	dur := time.Now().Sub(start).Round(time.Second)
+	dur := time.Since(start).Round(time.Second)
 	log.VPrintf(1, "Done loading registry '%s' (time: %s)", "Large", dur)
 	log.VPrintf(1, "Dirs: %d  Files: %d  Versions: %d", dirs, files, vers)
 	return reg
@@ -661,13 +664,11 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 		ErrFatalf(reg.SetSave("id", "SapFooRegistry"))
 		ErrFatalf(reg.SetSave("description", "Example based on ORD Reference App"))
 
-		_, err = reg.Model.AddAttr("openresourcediscovery", registry.STRING)
-		ErrFatalf(reg.SetSave("openresourcediscovery", "1.9"))
+		_, err = reg.Model.AddAttr("*", registry.STRING)
 		ErrFatalf(err)
 
-		_, err = reg.Model.AddAttr("policylevel", registry.STRING)
+		ErrFatalf(reg.SetSave("openresourcediscovery", "1.9"))
 		ErrFatalf(reg.SetSave("policylevel", "sap:core:v1"))
-		ErrFatalf(err)
 	}
 
 	// adding group(group itself and model) products
@@ -679,11 +680,12 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 
 	// products(groups) attributes
 	_, err = gmProducts.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
 	ErrFatalf(gProduct.SetSave("ordid", "sap.foo:product:ord-reference-app:v0"))
 	ErrFatalf(gProduct.SetSave("title", "ORD Reference App"))
 	ErrFatalf(gProduct.SetSave("vendor", "sap:vendor:SAP:"))
 	ErrFatalf(gProduct.SetSave("shortdescription", "Open Resource Discovery Reference Application"))
-	ErrFatalf(err)
 
 	// adding group(group itself and model) packages
 	gmPackages, err := reg.Model.AddGroupModel("packages", "package")
@@ -914,40 +916,43 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 
 	// adding group(group itself and model) capabilities
 	gmCapabilities, err := reg.Model.AddGroupModel("capabilities", "capability")
+	ErrFatalf(err)
 	gCapability, err := reg.AddGroup("capabilities", "sap.foo.bar:capability:mdi:v1")
-
+	ErrFatalf(err)
 	// capabilities(groups) attributes
 	_, err = gmCapabilities.AddAttr("ordid", registry.STRING)
 	ErrFatalf(gCapability.SetSave("ordid", "sap.foo.bar:capability:mdi:v1"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("title", registry.STRING)
 	ErrFatalf(gCapability.SetSave("title", "Master Data Integration Capability"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("type", registry.STRING)
 	ErrFatalf(gCapability.SetSave("type", "sap.mdo:mdi-capability:v1"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("shortdescription", registry.STRING)
 	ErrFatalf(gCapability.SetSave("shortdescription", "Short description of capability"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("description", registry.STRING)
 	ErrFatalf(gCapability.SetSave("description", "Optional, longer description"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("version", registry.STRING)
 	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("version", registry.STRING)
 	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("lastupdate", registry.STRING)
 	ErrFatalf(gCapability.SetSave("lastupdate", "2023-01-26T15:47:04+00:00"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("releasestatus", registry.STRING)
 	ErrFatalf(gCapability.SetSave("releasestatus", "active"))
-
+	ErrFatalf(err)
 	_, err = gmCapabilities.AddAttr("visibility", registry.STRING)
+	ErrFatalf(err)
 	ErrFatalf(gCapability.SetSave("visibility", "public"))
 
 	_, err = gmCapabilities.AddAttr("partofpackage", registry.STRING)
+	ErrFatalf(err)
 	ErrFatalf(gCapability.SetSave("partofpackage", "sap.foo.bar:package:SomePackage:v1"))
 
 	_, err = gmCapabilities.AddAttrArray("definitions", registry.NewItemMap(registry.NewItemType(registry.ANY)))
