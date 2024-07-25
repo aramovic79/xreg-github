@@ -35,9 +35,6 @@ func InitDB() {
 		firstTimeDB = false
 	}
 
-	// TODO: Remove this line
-	registry.DeleteDB(DBName)
-
 	if !registry.DBExists(DBName) {
 		registry.CreateDB(DBName)
 	}
@@ -79,7 +76,7 @@ func main() {
 	}
 
 	doDelete = flag.Bool("delete", false, "Delete DB and exit")
-	doRecreate = flag.Bool("recreate", false, "Recreate DB, then run")
+	doRecreate = flag.Bool("recreate", true, "Recreate DB, then run")
 	doVerify = flag.Bool("verify", false, "Exit after loading - for testing")
 	flag.IntVar(&Verbose, "v", Verbose, "Verbose level")
 	flag.Parse()
