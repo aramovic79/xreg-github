@@ -681,7 +681,6 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	// products(groups) attributes
 	_, err = gmProducts.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
-
 	ErrFatalf(gProduct.SetSave("ordid", "sap.foo:product:ord-reference-app:v0"))
 	ErrFatalf(gProduct.SetSave("title", "ORD Reference App"))
 	ErrFatalf(gProduct.SetSave("vendor", "sap:vendor:SAP:"))
@@ -694,52 +693,35 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 
 	// packages(groups) attributes
-	_, err = gmPackages.AddAttr("ordid", registry.STRING)
+	_, err = gmPackages.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
 	ErrFatalf(gPackage.SetSave("ordid", "sap.foo:package:ord-reference-app:v0"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("title", registry.STRING)
 	ErrFatalf(gPackage.SetSave("title", "Open Resource Discovery Reference Application"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("shortdescription", registry.STRING)
 	ErrFatalf(gPackage.SetSave("shortdescription", "This is a reference application for the Open Resource Discovery standard"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("description", registry.STRING)
 	ErrFatalf(gPackage.SetSave("description", "This reference application demonstrates how Open Resource Discovery (ORD) can be implemented, demonstrating different resources and discovery aspects"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("version", registry.STRING)
 	ErrFatalf(gPackage.SetSave("version", "0.3.0"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("policylevel", registry.STRING)
 	ErrFatalf(gPackage.SetSave("policylevel", "sap:core:v1"))
-	ErrFatalf(err)
+	ErrFatalf(gPackage.SetSave("vendor", "sap:vendor:SAP:"))
 
 	_, err = gmPackages.AddAttrArray("partofproducts", registry.NewItemType(registry.STRING))
+	ErrFatalf(err)
 	ErrFatalf(gPackage.SetSave("partofproducts[0]", "sap.foo:product:ord-reference-app:"))
-	ErrFatalf(err)
-
-	_, err = gmPackages.AddAttr("vendor", registry.STRING)
-	ErrFatalf(gPackage.SetSave("vendor", "sap:vendor:SAP:"))
-	ErrFatalf(err)
 
 	_, err = gmPackages.AddAttrArray("tags", registry.NewItemType(registry.STRING))
-	ErrFatalf(gPackage.SetSave("tags[0]", "reference application"))
 	ErrFatalf(err)
+	ErrFatalf(gPackage.SetSave("tags[0]", "reference application"))
 
 	// NOTE: "labels" in ORD specification is of type array<string>, whilst in xRegistry it is string !
 	_, err = gmPackages.AddAttrMap("labels", registry.NewItemArray(registry.NewItemType(registry.STRING)))
-	ErrFatalf(gPackage.SetSave("labels.customLabel[0]", "labels are more flexible than tags as you can define your own keys"))
 	ErrFatalf(err)
+	ErrFatalf(gPackage.SetSave("labels.customLabel[0]", "labels are more flexible than tags as you can define your own keys"))
 
 	_, err = gmPackages.AddAttrMap("documentationlabels", registry.NewItemArray(registry.NewItemType(registry.STRING)))
+	ErrFatalf(err)
 	// NOTE: In original ORD document, the key has value "Some Aspect"(with space!) which is not allowed
 	ErrFatalf(gPackage.SetSave("documentationlabels.SomeAspect[0]", "Markdown Documentation [with links](#)"))
 	ErrFatalf(gPackage.SetSave("documentationlabels.SomeAspect[1]", "With multiple values"))
-	ErrFatalf(err)
 
 	// adding group(group itself and model) consumptionbundles
 	gmConsumptionBundles, err := reg.Model.AddGroupModel("consumptionbundles", "consumptionbundle")
@@ -763,58 +745,46 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 
 	// apiResources(groups) attributes
-	_, err = gmApiResources.AddAttr("ordid", registry.STRING)
+	_, err = gmApiResources.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
 	ErrFatalf(gApiResource.SetSave("ordid", "sap.foo:apiResource:astronomy:v1"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("title", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("title", "Astronomy API"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("shortdescription", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("shortdescription", "The API allows you to discover..."))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("description", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("description", "A longer description of this API with **markdown** \n## headers\n etc..."))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("version", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("version", "1.0.3"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("visibility", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("visibility", "public"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("releasestatus", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("releasestatus", "active"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("systeminstanceaware", registry.BOOLEAN)
-	ErrFatalf(gApiResource.SetSave("systeminstanceaware", false))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("policylevel", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("policylevel", "custom"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("custompolicylevel", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("custompolicylevel", "sap.foo:custom:v1"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("partofpackage", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("partofpackage", "sap.foo:package:ord-reference-app:v1"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttrArray("partofconsumptionbundles", registry.NewItemMap(registry.NewItemType(registry.STRING)))
-	ErrFatalf(gApiResource.SetSave("partofconsumptionbundles[0].ordId", "sap.foo:consumptionBundle:noAuth:v1"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttrArray("partofgroups", registry.NewItemType(registry.STRING))
-	ErrFatalf(gApiResource.SetSave("partofgroups[0]", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"))
-	ErrFatalf(err)
-	_, err = gmApiResources.AddAttr("apiprotocol", registry.STRING)
 	ErrFatalf(gApiResource.SetSave("apiprotocol", "rest"))
+
+	_, err = gmApiResources.AddAttr("systeminstanceaware", registry.BOOLEAN)
 	ErrFatalf(err)
+	ErrFatalf(gApiResource.SetSave("systeminstanceaware", false))
+
+	_, err = gmApiResources.AddAttrArray("partofconsumptionbundles", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(err)
+	ErrFatalf(gApiResource.SetSave("partofconsumptionbundles[0].ordId", "sap.foo:consumptionBundle:noAuth:v1"))
+
+	_, err = gmApiResources.AddAttrArray("partofgroups", registry.NewItemType(registry.STRING))
+	ErrFatalf(err)
+	ErrFatalf(gApiResource.SetSave("partofgroups[0]", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"))
+
 	_, err = gmApiResources.AddAttrArray("apiresourcelinks", registry.NewItemMap(registry.NewItemType(registry.STRING)))
+	ErrFatalf(err)
 	ErrFatalf(gApiResource.SetSave("apiresourcelinks[0].type", "api-documentation"))
 	ErrFatalf(gApiResource.SetSave("apiresourcelinks[0].url", "/swagger-ui.html?urls.primaryName=Astronomy%20V1%20API"))
-	ErrFatalf(err)
+
 	_, err = gmApiResources.AddAttrArray("entrypoints", registry.NewItemType(registry.STRING))
+	ErrFatalf(err)
 	ErrFatalf(gApiResource.SetSave("entrypoints[0]", "/astronomy/v1"))
-	ErrFatalf(err)
+
 	_, err = gmApiResources.AddAttrMap("extensible", registry.NewItemType(registry.STRING))
-	ErrFatalf(gApiResource.SetSave("extensible.supported", "no"))
 	ErrFatalf(err)
+	ErrFatalf(gApiResource.SetSave("extensible.supported", "no"))
+
 	// adding resource to the apiResources group with name resourceDefinitions
 	rmApiResource, err := gmApiResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, false)
 	ErrFatalf(err)
@@ -822,19 +792,18 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 
 	// apiResources[0].resourceDefinitions(resource)
-	_, err = rmApiResource.AddAttr("type", registry.STRING)
+	_, err = rmApiResource.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
 	ErrFatalf(rd.SetSave("type", "openapi-v3"))
-	ErrFatalf(err)
-	_, err = rmApiResource.AddAttr("mediatype", registry.STRING)
 	ErrFatalf(rd.SetSave("mediatype", "application/json"))
-	ErrFatalf(err)
-	_, err = rmApiResource.AddAttr("url", registry.STRING)
 	ErrFatalf(rd.SetSave("url", "/ord/metadata/astronomy-v1.oas3.json"))
-	ErrFatalf(err)
+
 	_, err = rmApiResource.AddAttrArray("accessstrategies", registry.NewItemMap(registry.NewItemType(registry.STRING)))
 	ErrFatalf(rd.SetSave("accessstrategies[0].type", "open"))
 	ErrFatalf(err)
-	// adding group(group itself and model) eventResources
+
+	// adding groups(group itself and model) eventResources1 and eventResources2 into eventResources
 	gmEventResources, err := reg.Model.AddGroupModel("eventresources", "eventresource")
 	ErrFatalf(err)
 	gEventResource1, err := reg.AddGroup("eventresources", "sap.foo:eventResource:ExampleEventResource:v1")
@@ -843,38 +812,22 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 
 	// eventResources(groups) attributes
-	_, err = gmEventResources.AddAttr("ordid", registry.STRING)
+	_, err = gmEventResources.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("title", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("shortdescription", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("description", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("version", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("lastupdate", registry.STRING) // QUESTION: Is this field redundant having in mind "modifiedat"?
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("releasestatus", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("partofpackage", registry.STRING)
-	ErrFatalf(err)
-	_, err = gmEventResources.AddAttr("visibility", registry.STRING)
-	ErrFatalf(err)
+
 	_, err = gmEventResources.AddAttrMap("extensible", registry.NewItemType(registry.STRING))
 	ErrFatalf(err)
+
 	// adding resource to the eventResources groups with name resourceDefinitions
 	rmEventResource, err := gmEventResources.AddResourceModel("resourcedefinitions", "resourcedefinition", 2, true, true, false)
 	ErrFatalf(err)
 
-	_, err = rmEventResource.AddAttr("type", registry.STRING)
+	_, err = rmEventResource.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
-	_, err = rmEventResource.AddAttr("mediatype", registry.STRING)
-	ErrFatalf(err)
-	_, err = rmEventResource.AddAttr("url", registry.STRING)
-	ErrFatalf(err)
+
 	_, err = rmEventResource.AddAttrArray("accessstrategies", registry.NewItemMap(registry.NewItemType(registry.STRING)))
 	ErrFatalf(err)
+
 	// eventresources.eventResource1 group
 	ErrFatalf(gEventResource1.SetSave("ordid", "sap.foo:eventResource:ExampleEventResource:v1"))
 	ErrFatalf(gEventResource1.SetSave("title", "Event Example"))
@@ -919,49 +872,30 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 	gCapability, err := reg.AddGroup("capabilities", "sap.foo.bar:capability:mdi:v1")
 	ErrFatalf(err)
-	// capabilities(groups) attributes
-	_, err = gmCapabilities.AddAttr("ordid", registry.STRING)
-	ErrFatalf(gCapability.SetSave("ordid", "sap.foo.bar:capability:mdi:v1"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("title", registry.STRING)
-	ErrFatalf(gCapability.SetSave("title", "Master Data Integration Capability"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("type", registry.STRING)
-	ErrFatalf(gCapability.SetSave("type", "sap.mdo:mdi-capability:v1"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("shortdescription", registry.STRING)
-	ErrFatalf(gCapability.SetSave("shortdescription", "Short description of capability"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("description", registry.STRING)
-	ErrFatalf(gCapability.SetSave("description", "Optional, longer description"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("version", registry.STRING)
-	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("version", registry.STRING)
-	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("lastupdate", registry.STRING)
-	ErrFatalf(gCapability.SetSave("lastupdate", "2023-01-26T15:47:04+00:00"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("releasestatus", registry.STRING)
-	ErrFatalf(gCapability.SetSave("releasestatus", "active"))
-	ErrFatalf(err)
-	_, err = gmCapabilities.AddAttr("visibility", registry.STRING)
-	ErrFatalf(err)
-	ErrFatalf(gCapability.SetSave("visibility", "public"))
 
-	_, err = gmCapabilities.AddAttr("partofpackage", registry.STRING)
+	// capabilities(groups) attributes
+	_, err = gmCapabilities.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
+
+	ErrFatalf(gCapability.SetSave("ordid", "sap.foo.bar:capability:mdi:v1"))
+	ErrFatalf(gCapability.SetSave("title", "Master Data Integration Capability"))
+	ErrFatalf(gCapability.SetSave("type", "sap.mdo:mdi-capability:v1"))
+	ErrFatalf(gCapability.SetSave("shortdescription", "Short description of capability"))
+	ErrFatalf(gCapability.SetSave("description", "Optional, longer description"))
+	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
+	ErrFatalf(gCapability.SetSave("version", "1.0.0"))
+	ErrFatalf(gCapability.SetSave("lastupdate", "2023-01-26T15:47:04+00:00"))
+	ErrFatalf(gCapability.SetSave("releasestatus", "active"))
+	ErrFatalf(gCapability.SetSave("visibility", "public"))
 	ErrFatalf(gCapability.SetSave("partofpackage", "sap.foo.bar:package:SomePackage:v1"))
 
 	_, err = gmCapabilities.AddAttrArray("definitions", registry.NewItemMap(registry.NewItemType(registry.ANY)))
+	ErrFatalf(err)
+
 	ErrFatalf(gCapability.SetSave("definitions[0].type", "sap.mdo:mdi-capability-definition:v1"))
 	ErrFatalf(gCapability.SetSave("definitions[0].mediaType", "application/json"))
 	ErrFatalf(gCapability.SetSave("definitions[0].url", "/capabilities/foo.bar.json"))
 	ErrFatalf(gCapability.SetSave("definitions[0].accessStrategies[0].type", "open"))
-
-	ErrFatalf(err)
 
 	// adding group(group itself and model) "groups"
 	gmGroups, err := reg.Model.AddGroupModel("groups", "group")
@@ -970,35 +904,35 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(err)
 	// "groups"(groups) attributes
 	_, err = gmGroups.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
 	ErrFatalf(gGroup.SetSave("groupid", "sap.foo:groupTypeAbc:sap.foo:groupAssignmentValue"))
 	ErrFatalf(gGroup.SetSave("grouptypeid", "sap.foo:groupTypeAbc"))
 	ErrFatalf(gGroup.SetSave("title", "Title of group assignment / instance"))
-
-	ErrFatalf(err)
 
 	// adding group(group itself and model) "groupTypes"
 	gmGroupTypes, err := reg.Model.AddGroupModel("grouptypes", "grouptype")
 	ErrFatalf(err)
 	gGroupType, err := reg.AddGroup("grouptypes", "sap.foo:groupTypeAbc")
 	ErrFatalf(err)
+
 	// "grouptypes"(groups) attributes
 	_, err = gmGroupTypes.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
 	ErrFatalf(gGroupType.SetSave("grouptypeid", "sap.foo:groupTypeAbc"))
 	ErrFatalf(gGroupType.SetSave("title", "Title of group type"))
-
-	ErrFatalf(err)
 
 	// adding group(group itself and model) "tombstones"
 	gmTombstones, err := reg.Model.AddGroupModel("tombstones", "tombstone")
 	ErrFatalf(err)
 	gTombstone, err := reg.AddGroup("tombstones", "sap.foo:apiResource:astronomy:v0")
 	ErrFatalf(err)
-	// "grouptypes"(groups) attributes
+
+	// "tombstones"(groups) attributes
 	_, err = gmTombstones.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
 	ErrFatalf(gTombstone.SetSave("ordid", "sap.foo:apiResource:astronomy:v0"))
 	ErrFatalf(gTombstone.SetSave("removalDate", "2020-12-02T14:12:59Z"))
-
-	ErrFatalf(err)
 
 	ErrFatalf(reg.Model.Verify())
 
