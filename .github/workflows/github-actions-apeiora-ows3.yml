@@ -15,7 +15,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Check and install gardenctl
         run: |
           if ! command -v gardenctl &> /dev/null
@@ -39,6 +38,7 @@ jobs:
           fi    
       - name: Run tests using make
         run: make test
+      - run: echo "🍏 This job's status is ${{ job.status }}."
       # - name: Set KUBECONFIG environment variable
       #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
       # - name: Apply Kubernetes configuration
