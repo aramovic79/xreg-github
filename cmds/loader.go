@@ -679,7 +679,7 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	ErrFatalf(gSapFoo.SetSave("policylevel", "sap:core:v1"))
 
 	// sap.foo group attributes
-	rmApiResources, err := gmOrd.AddResourceModel("apiresources", "apiresource", 1, true, false, false)
+	rmApiResources, err := gmOrd.AddResourceModel("apiresources", "apiresource", 1, true, false, true)
 	ErrFatalf(err)
 
 	rApiResource, err := gSapFoo.AddResource("apiresources", "astronomy:v1", "1.0.3")
