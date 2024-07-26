@@ -16,3 +16,18 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Check and install gardenctl
+        run: |
+          if ! command -v gardenctl &> /dev/null
+          then
+            echo "gardenctl could not be found, installing..."
+            curl -Lo gardenctl https://github.com/gardener/gardenctl/releases/latest/download/gardenctl-linux-amd64
+            chmod +x gardenctl
+            sudo mv gardenctl /usr/local/bin/
+          else
+            echo "gardenctl is already installed"
+          fi
+      - name: Set KUBECONFIG environment variable
+        run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
+      - name: Apply Kubernetes configuration
+        run: kubectl apply -f misc/mysql.yaml  
