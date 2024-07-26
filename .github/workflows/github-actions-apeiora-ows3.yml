@@ -27,7 +27,19 @@ jobs:
           else
             echo "gardenctl is already installed"
           fi
-      - name: Set KUBECONFIG environment variable
-        run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
-      - name: Apply Kubernetes configuration
-        run: kubectl apply -f misc/mysql.yaml  
+      - name: Check and install make
+        run: |
+          if ! command -v make &> /dev/null
+          then
+            echo "make could not be found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y make
+          else
+            echo "make is already installed"
+          fi    
+      - name: Run tests using make
+        run: make test
+      # - name: Set KUBECONFIG environment variable
+      #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
+      # - name: Apply Kubernetes configuration
+      #   run: kubectl apply -f misc/mysql.yaml  
