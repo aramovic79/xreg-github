@@ -675,15 +675,35 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	_, err = gmOrd.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
 
+	// sap.foo group attributes
 	ErrFatalf(gSapFoo.SetSave("openresourcediscovery", "1.9"))
 	ErrFatalf(gSapFoo.SetSave("policylevel", "sap:core:v1"))
 
-	// sap.foo group attributes
-	rmApiResources, err := gmOrd.AddResourceModel("apiresources", "apiresource", 1, true, false, true)
+	// sap.foo group resources: apiresources(astronomy:v1) and apiresourcedefinitions(astronomy:v1:openapi-v3:application-json)
+	rmApiResources, err := gmOrd.AddResourceModel("apiresources", "apiresource", 1, true, false, false)
 	ErrFatalf(err)
 
 	rApiResource, err := gSapFoo.AddResource("apiresources", "astronomy:v1", "1.0.3")
 	ErrFatalf(err)
+
+	rmApiResourceDefinitions, err := gmOrd.AddResourceModel("apiresourcedefinitions", "apiresourcedefinition", 1, true, false, true)
+	ErrFatalf(err)
+
+	rApiResourceDefinition, err := gSapFoo.AddResource("apiresourcedefinitions", "astronomy:v1:openapi-v3:application-json", "1.0.3")
+	ErrFatalf(err)
+
+	// apiResourceDefinitions(resource) attributes
+	_, err = rmApiResourceDefinitions.AddAttrArray("accessstrategies", registry.NewItemType(registry.ANY))
+	ErrFatalf(err)
+
+	ErrFatalf(rApiResourceDefinition.SetSave("accessstrategies[0].type", "open"))
+
+	_, err = rmApiResourceDefinitions.AddAttr("*", registry.STRING)
+	ErrFatalf(err)
+
+	ErrFatalf(rApiResourceDefinition.SetSave("apibase64", "TODO"))
+	ErrFatalf(rApiResourceDefinition.SetSave("mediaType", "application/json"))
+	ErrFatalf(rApiResourceDefinition.SetSave("type", "openapi-v3"))
 
 	// apiResources(resources) attributes
 	_, err = rmApiResources.AddAttr("*", registry.STRING)
@@ -719,10 +739,7 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 
 	_, err = rmApiResources.AddAttrArray("resourcedefinitions", registry.NewItemMap(registry.NewItemType(registry.ANY)))
 	ErrFatalf(err)
-	ErrFatalf(rApiResource.SetSave("resourcedefinitions[0].type", "openapi-v3"))
-	ErrFatalf(rApiResource.SetSave("resourcedefinitions[0].mediaType", "application/json"))
-	ErrFatalf(rApiResource.SetSave("resourcedefinitions[0].url", "/ord/metadata/astronomy-v1.oas3.json"))
-	ErrFatalf(rApiResource.SetSave("resourcedefinitions[0].accessStrategies[0].type", "open"))
+	ErrFatalf(rApiResource.SetSave("resourcedefinitions[0].xref", "apiresourcedefinitions/astronomy:v1:openapi-v3:application-json"))
 
 	_, err = rmApiResources.AddAttrArray("entrypoints", registry.NewItemType(registry.STRING))
 	ErrFatalf(err)
