@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -642,6 +643,20 @@ func LoadDocStore(reg *registry.Registry) *registry.Registry {
 	return reg
 }
 
+func downloadFile(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to download file: %s", resp.Status)
+	}
+
+	return io.ReadAll(resp.Body)
+}
+
 func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	var err error
 	log.VPrintf(1, "Loading registry '%s'", "sap.foo registry")
@@ -701,7 +716,14 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	_, err = rmApiResourceDefinitions.AddAttr("*", registry.STRING)
 	ErrFatalf(err)
 
-	ErrFatalf(rApiResourceDefinition.SetSave("apibase64", "TODO"))
+	url := "https://ord-reference-application.cfapps.sap.hana.ondemand.com/astronomy/v1/openapi/oas3.json"
+	content, err := downloadFile(url)
+
+	if err != nil {
+		log.Fatalf("Failed to download file: %v", err)
+	}
+
+	ErrFatalf(rApiResourceDefinition.SetSave("#resource", content))
 	ErrFatalf(rApiResourceDefinition.SetSave("mediaType", "application/json"))
 	ErrFatalf(rApiResourceDefinition.SetSave("type", "openapi-v3"))
 

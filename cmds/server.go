@@ -53,6 +53,15 @@ func InitDB() {
 
 	if reg == nil {
 		reg = LoadOrdSample(reg)
+		// reg = LoadDirsSample(reg)
+		// LoadEndpointsSample(nil)
+		// LoadMessagesSample(nil)
+		// LoadSchemasSample(nil)
+		// reg = LoadAPIGuru(nil, "APIs-guru", "openapi-directory")
+		// reg = LoadDocStore(reg)
+		// if os.Getenv("XR_LOAD_LARGE") != "" {
+		// 	go LoadLargeSample(nil)
+		// }
 	}
 
 	if reg == nil {
