@@ -26,13 +26,13 @@ qtest: .test
 tmptest: 
 	@echo "# Testing: tmp change"
 	@go clean -testcache
-	@echo "go test -failfast $(TESTDIRS)"
-	@go test -failfast ./tests
+	@echo "go test -failfast ./registry"
+	@# go test -failfast ./tests
 	@go test -failfast ./registry
 	@echo
 	@echo "# Run again w/o deleting the Registry after each one"
 	@go clean -testcache
-	NO_DELETE_REGISTRY=1 go test -failfast $(TESTDIRS)
+	NO_DELETE_REGISTRY=1 go test -failfast ./registry
 	@touch .test
 
 test: .test
