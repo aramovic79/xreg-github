@@ -16,7 +16,7 @@ spec:
         run: xreg-server
     spec:
       containers:
-      - image: duglin/xreg-server
+      - image: xreg-server
         imagePullPolicy: IfNotPresent
         name: xreg-server
         command: [ "/server" ]

@@ -8,7 +8,7 @@ DBHOST     ?= 127.0.0.1
 DBPORT     ?= 3306
 DBUSER     ?= root
 DBPASSWORD ?= password
-IMAGE      ?= duglin/xreg-server
+IMAGE      ?= xreg-server
 
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
 
@@ -89,9 +89,15 @@ testimage: .testimage
 
 push: .push
 .push: .image
-	docker push $(IMAGE)
-	docker push $(IMAGE)-all
-	@touch .push
+    docker login --username=I540731 --password=cmVmdGtuOjAxOjE3NTQ3NDU4MTk6dlZBSHVBM0Z3WUpGQ1hnaXZnQnhjWFdyOTAy apeirora-ows3.common.repositories.cloud.sap
+    docker push apeirora-ows3.common.repositories.cloud.sap/xreg-server
+    @touch .push
+
+# push: .push
+# .push: .image
+# 	docker push $(IMAGE)
+# 	docker push $(IMAGE)-all
+# 	@touch .push
 
 notest run: mysql server local
 
