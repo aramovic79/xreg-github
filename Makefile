@@ -70,6 +70,7 @@ endif
 	@misc/errOutput docker build --progress=plain -f misc/Dockerfile -t $(IMAGE) --no-cache .
 	@misc/errOutput docker build -f misc/Dockerfile-all -t $(IMAGE)-all \
 		--no-cache .
+	@echo "# Image $(IMAGE) successfully created"
 ifdef XR_SPEC
 	@rm -rf .spec
 endif
@@ -89,7 +90,7 @@ testimage: .testimage
 
 push: .push
 .push: .image
-	@echo "Build and push Docker image"
+	@echo "# Build and push Docker image"
 	@echo "Artifactory url: ${{ env.JF_URL}}"
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
 	@docker push $(JF_URL)/$(IMAGE)
