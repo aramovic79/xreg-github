@@ -23,16 +23,14 @@ cmds: .cmds
 
 qtest: .test
 
-test: .test
+test: .test .unittest
 .test: export TESTING=1
 .test: .cmds */*test.go
-	@make --no-print-directory mysql waitformysql
-	@echo
 	@echo "# Testing"
 	@go clean -testcache
 	@echo "go test -failfast $(TESTDIRS)"
 	@for s in $(TESTDIRS); do if ! go test -failfast $$s; then exit 1; fi; done
-	@# go test -failfast $(TESTDIRS)
+	@go test -failfast $(TESTDIRS)
 	@echo
 	@echo "# Run again w/o deleting the Registry after each one"
 	@go clean -testcache

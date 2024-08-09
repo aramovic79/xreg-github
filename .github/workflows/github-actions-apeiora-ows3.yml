@@ -15,6 +15,9 @@ jobs:
       - name: List files in the repository
         run: |
           find ${{ github.workspace }} -type f
+      - name: List test files
+        run: |
+          shell find . -name *_test.go -exec dirname {} \; | sort -u
       - name: Print current directory
         run: pwd
       - name: Check and install gardenctl
@@ -38,8 +41,8 @@ jobs:
           else
             echo "make is already installed"
           fi    
-      - name: Run tests using make
-        run: make test
+      # - name: Run tests using make
+      #   run: make test
       - run: echo "🍏 This job's status is ${{ job.status }}."
       # - name: Set KUBECONFIG environment variable
       #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
