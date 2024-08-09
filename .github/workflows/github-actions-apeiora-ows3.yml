@@ -41,8 +41,8 @@ jobs:
           else
             echo "make is already installed"
           fi    
-      # - name: Run tests using make
-      #   run: make test
+      - name: Run tests using make
+        run: make tmptest
       - run: echo "🍏 This job's status is ${{ job.status }}."
       # - name: Set KUBECONFIG environment variable
       #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
