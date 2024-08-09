@@ -43,6 +43,8 @@ jobs:
           fi    
       - name: Run tests using make
         run: make tmptest
+      - name: Build docker image using make
+        run: make image
       - run: echo "🍏 This job's status is ${{ job.status }}."
       # - name: Set KUBECONFIG environment variable
       #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
