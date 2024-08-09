@@ -27,14 +27,8 @@ tmptest:
 	@echo "# Testing: tmp change"
 	@go clean -testcache
 	@echo "go test -failfast ./registry"
-	@# go test -failfast ./tests
 	@go test -failfast ./registry
-	@echo
-	@echo "# Run again w/o deleting the Registry after each one"
-	@go clean -testcache
-	NO_DELETE_REGISTRY=1 go test -failfast ./registry
-	@touch .test
-
+	
 test: .test
 .test: export TESTING=1
 .test: .cmds */*test.go
