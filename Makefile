@@ -23,7 +23,7 @@ cmds: .cmds
 
 qtest: .test
 
-test: .test .testimage
+test: .test
 .test: export TESTING=1
 .test: .cmds */*test.go
 	@make --no-print-directory mysql waitformysql
@@ -39,7 +39,7 @@ test: .test .testimage
 	NO_DELETE_REGISTRY=1 go test -failfast $(TESTDIRS)
 	@touch .test
 
-unittest:
+.unittest:
 	go test -failfast ./registry
 
 server: cmds/server.go cmds/loader.go registry/*
