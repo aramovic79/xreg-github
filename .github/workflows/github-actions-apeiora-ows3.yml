@@ -1,5 +1,5 @@
 name: GitHub Actions ApeiroRA OWS3
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is testing out apeirora GitHub Actions
 on: [push]
 jobs:
   ApeiroRA-OWS3-GitHub-Actions:
@@ -12,12 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test the code on the runner."
-      - name: List files in the repository
-        run: |
-          find ${{ github.workspace }} -type f
-      - name: List test files
-        run: |
-          find . -name *_test.go -exec dirname {} \; | sort -u
       - name: Print current directory
         run: pwd
       - name: Check and install gardenctl
@@ -43,6 +37,12 @@ jobs:
           fi    
       - name: Run tests using make
         run: make tmptest
+      - name: List files in the repository
+        run: |
+          find ${{ github.workspace }} -type f
+      - name: List test files
+        run: |
+          find . -name *_test.go -exec dirname {} \; | sort -u
       - name: Build and push Docker image
         run: make push
         env:
