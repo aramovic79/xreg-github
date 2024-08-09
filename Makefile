@@ -89,10 +89,9 @@ testimage: .testimage
 
 push: .push
 .push: .image
-    docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
-	
-    docker push apeirora-ows3.common.repositories.cloud.sap/xreg-server
-    @touch .push
+	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
+	@docker push apeirora-ows3.common.repositories.cloud.sap/xreg-server
+	@touch .push
 
 notest run: mysql server local
 
