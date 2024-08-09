@@ -14,7 +14,7 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test the code on the runner."
       - name: List files in the repository
         run: |
-          find ${{ github.workspace }}
+          find ${{ github.workspace }} -type f
       - name: Print current directory
         run: pwd
       - name: Check and install gardenctl
