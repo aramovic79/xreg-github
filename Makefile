@@ -89,7 +89,7 @@ testimage: .testimage
 
 push: .push
 .push: .image
-    docker login --username=secrets.ARTIFACTORY_USER --password=secrets.ARTIFACTORY_TOKEN secrets.JF_URL
+    docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
     docker push apeirora-ows3.common.repositories.cloud.sap/xreg-server
     @touch .push
 
