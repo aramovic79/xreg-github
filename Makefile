@@ -18,7 +18,7 @@ ifdef XR_SPEC
 endif
 
 cmds: .cmds
-.cmds: server xr
+.cmds: server
 	@touch .cmds
 
 qtest: .test
