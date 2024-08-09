@@ -47,10 +47,10 @@ server: cmds/server.go cmds/loader.go registry/*
 	@echo "# Building server"
 	go build $(BUILDFLAGS) -o $@ cmds/server.go cmds/loader.go
 
-xr: cmds/xr*.go registry/*
+xr: cmds/xr/xr*.go registry/*
 	@echo
 	@echo "# Building CLI"
-	go build $(BUILDFLAGS) -o $@ cmds/xr*.go
+	go build $(BUILDFLAGS) -o $@ cmds/xr/xr*.go
 
 image: .image
 .image: server misc/Dockerfile misc/waitformysql misc/Dockerfile-all \
@@ -63,7 +63,7 @@ ifdef XR_SPEC
 	@mkdir -p .spec
 	cp -r $(XR_SPEC)/* .spec
 endif
-	@misc/errOutput docker build -f misc/Dockerfile -t $(IMAGE) --no-cache .
+	@misc/errOutput docker build --progress=plain -f misc/Dockerfile -t $(IMAGE) --no-cache .
 	@misc/errOutput docker build -f misc/Dockerfile-all -t $(IMAGE)-all \
 		--no-cache .
 ifdef XR_SPEC
