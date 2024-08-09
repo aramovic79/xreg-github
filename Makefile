@@ -90,7 +90,7 @@ testimage: .testimage
 push: .push
 .push: .image
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
-	@docker push $(JR_URL)/$(IMAGE)
+	@docker push $(JF_URL)/$(IMAGE)
 	@touch .push
 
 notest run: mysql server local

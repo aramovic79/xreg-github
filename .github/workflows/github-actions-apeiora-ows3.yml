@@ -48,7 +48,7 @@ jobs:
         env:
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
           ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-          JF_URL: ${{ secrets.JF_URL }}
+          JF_URL: ${{ env.JF_URL }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       # - name: Set KUBECONFIG environment variable
       #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
