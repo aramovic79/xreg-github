@@ -93,7 +93,7 @@ push: .push
 	@echo "# Build and push Docker image"
 	@echo "Artifactory url: $(JF_URL)"
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
-	@docker push $(JF_URL)/$(IMAGE)
+	@docker push $(IMAGE)
 	@touch .push
 
 notest run: mysql server local
