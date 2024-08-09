@@ -17,7 +17,7 @@ jobs:
           find ${{ github.workspace }} -type f
       - name: List test files
         run: |
-          shell find . -name *_test.go -exec dirname {} \; | sort -u
+          find . -name *_test.go -exec dirname {} \; | sort -u
       - name: Print current directory
         run: pwd
       - name: Check and install gardenctl
