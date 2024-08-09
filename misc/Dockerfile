@@ -1,7 +1,14 @@
-FROM golang:alpine
-RUN apk add make
 
+# Stage 1: Build the Go application
+FROM golang:alpine AS builder
+
+# Install necessary packages
+RUN apk add --no-cache make
+
+# Set the working directory
 WORKDIR /go/src/
+
+# Copy the source code into the container
 COPY . /go/src/
 
 # Erase executables that were copied from the COPY cmd above
@@ -9,6 +16,7 @@ RUN find . -maxdepth 1 -type f -executable -exec rm {} \;
 
 # Force static builds
 ENV GO_EXTLINK_ENABLED=0
+
 ENV CGO_ENABLED=0
 ENV BUILDFLAGS -ldflags \"-w -extldflags -static\" \
 	-tags netgo -installsuffix netgo
@@ -22,8 +30,8 @@ FROM scratch
 COPY --from=0 /etc/ssl/certs/ca-certificates.crt \
 	/etc/ssl/certs/ca-certificates.crt
 
-COPY --from=0 /go/src/server /server
-COPY --from=0 /go/src/xr /xr
+COPY --from=builder /go/src/server /server
+# COPY --from=0 /go/src/xr /xr
 COPY misc/repo.tar /misc/repo.tar
 
 # If local copy of spec is found, copy it into the image so we can use it
