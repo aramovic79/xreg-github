@@ -36,15 +36,23 @@ jobs:
           else
             echo "gardenlogin is already installed"
           fi
+      - name: Check and install kubectl
+        run: |
+          if ! command -v kubectl &> /dev/null
+          then
+            echo "kubectl could not be found, installing..."
+            curl -Lo kubectl https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+          else
+            echo "kubectl is already installed"
+          fi
       - name: Check and install kubelogin
         run: |
           if ! command -v kubelogin &> /dev/null
           then
             echo "kubelogin could not be found, installing..."
-            curl -Lo kubelogin https://github.com/int128/kubelogin/releases/latest/download/kubelogin_linux_amd64.zip
-            unzip kubelogin_linux_amd64.zip
-            chmod +x kubelogin
-            sudo mv kubelogin /usr/local/bin/
+            brew install int128/kubelogin/kubelogin
           else
             echo "kubelogin is already installed"
           fi
