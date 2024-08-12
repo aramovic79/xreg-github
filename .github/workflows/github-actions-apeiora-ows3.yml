@@ -25,6 +25,17 @@ jobs:
           else
             echo "gardenctl is already installed"
           fi
+      - name: Check and install gardenlogin
+        run: |
+          if ! command -v gardenlogin &> /dev/null
+          then
+            echo "gardenlogin could not be found, installing..."
+            curl -Lo gardenlogin https://github.com/gardener/gardenlogin/releases/latest/download/gardenlogin-linux-amd64
+            chmod +x gardenlogin
+            sudo mv gardenlogin /usr/local/bin/
+          else
+            echo "gardenlogin is already installed"
+          fi
       - name: Check and install make
         run: |
           if ! command -v make &> /dev/null
