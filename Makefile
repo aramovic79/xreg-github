@@ -23,7 +23,7 @@ define increment_version
 	$(eval MINOR := $(word 2,$(subst ., ,$(CURRENT_VERSION))))
 	$(eval PATCH := $(word 3,$(subst ., ,$(CURRENT_VERSION))))
 	$(eval NEW_MINOR := $(shell echo $$(($(MINOR) + 1))))
-	$(eval NEW_VERSION := $(MAJOR).$(MINOR).$(NEW_MINOR))
+	$(eval NEW_VERSION := $(MAJOR).$(NEW_MINOR).$(PATCH))
 endef
 
 ifdef XR_SPEC
