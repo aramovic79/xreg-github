@@ -170,6 +170,14 @@ mysql-client: mysql waitformysql
 k8: .kube/kubeconfig-garden-ows3.yaml
 	@echo "Obtaining namespaces existing in the OWS3 kubernetes cluster..."
 	@echo "Current directory is: $(shell pwd)"
+	@if [ -d ".kube" ]; then \
+		echo ".kube directory exists"; \
+		echo "Path: $(shell pwd)/.kube"; \
+		echo "Contents:"; \
+		ls -la .kube; \
+	else \
+		echo ".kube directory does not exist"; \
+	fi
 	gardenctl config set-garden sap-landscape-canary --kubeconfig ".kube/kubeconfig-garden-ows3.yaml"
 #@export KUBECONFIG=$(GARDEN_OWS3_PATH) && gardenctl target garden sap-landscape-canary
 	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
