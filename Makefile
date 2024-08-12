@@ -14,18 +14,18 @@ VERSION_FILE := version.txt
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
 # Ensure the version file exists
 $(VERSION_FILE):
-    @echo "1.0.0" > $(VERSION_FILE)
+	@echo "1.0.0" > $(VERSION_FILE)
 
 # Read the current version from the file
 CURRENT_VERSION := $(shell cat $(VERSION_FILE))
 
 # Increment the (minor) version number
 define increment_version
-    $(eval MAJOR := $(word 1,$(subst ., ,$(CURRENT_VERSION))))
-    $(eval MINOR := $(word 2,$(subst ., ,$(CURRENT_VERSION))))
-    $(eval PATCH := $(word 3,$(subst ., ,$(CURRENT_VERSION))))
-    $(eval NEW_MINOR := $(shell echo $$(($(MINOR) + 1))))
-    $(eval NEW_VERSION := $(MAJOR).$(MINOR).$(NEW_MINOR))
+	$(eval MAJOR := $(word 1,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval MINOR := $(word 2,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval PATCH := $(word 3,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval NEW_MINOR := $(shell echo $$(($(MINOR) + 1))))
+	$(eval NEW_VERSION := $(MAJOR).$(MINOR).$(NEW_MINOR))
 endef
 
 ifdef XR_SPEC
@@ -108,7 +108,7 @@ push: .push
 .push: .image
 	@echo "# Build and push Docker image"
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
-	$(call increment_version)
+	@$(call increment_version)
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
