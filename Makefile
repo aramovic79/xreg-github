@@ -11,10 +11,8 @@ DBPASSWORD ?= password
 IMAGE      ?= xreg-server
 VERSION_FILE := version.txt
 
+# Get folders containing tests
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
-# Ensure the version file exists
-$(VERSION_FILE):
-	@echo "1.0.0" > $(VERSION_FILE)
 
 # Read the current version from the file
 CURRENT_VERSION := $(shell cat $(VERSION_FILE))
@@ -109,8 +107,9 @@ push: .push
 	@echo "# Build and push Docker image"
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
 	@$(call increment_version)
+	@echo "New version: $(NEW_VERSION)"
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
-	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker push $(JF_URL)/$(IMAGE)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
 
