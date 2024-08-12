@@ -34,23 +34,45 @@ jobs:
             sudo apt-get install -y make
           else
             echo "make is already installed"
-          fi    
-      - name: Run tests using make
-        run: make tmptest
-      - name: List files in the repository
+          fi
+      - name: Check and install uuidgen
         run: |
-          find ${{ github.workspace }} -type f
-      - name: List test files
-        run: |
-          find . -name *_test.go -exec dirname {} \; | sort -u
-      - name: Build and push Docker image
-        run: make push
+          if ! command -v uuidgen &> /dev/null
+          then
+            echo "uuidgen could not be found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y uuid-runtime
+          else
+            echo "uuidgen is already installed"
+          fi
+      - name: Set GCTL_SESSION_ID
+        run: echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
+      - name: Apply K8 configs
+        run: make k8
         env:
-          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
-          ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-          JF_URL: ${{ secrets.JF_URL }}
+          GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
+          K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
+      # - name: Run tests using make
+      #   run: make tmptest
+      # - name: List files in the repository
+      #   run: |
+      #     find ${{ github.workspace }} -type f
+      # - name: List test files
+      #   run: |
+      #     find . -name *_test.go -exec dirname {} \; | sort -u
+      # - name: Build and push Docker image
+      #   run: make push
+      #   env:
+      #     ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+      #     ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
+      #     JF_URL: ${{ secrets.JF_URL }}
+      
+      - name: Publish on Kubernetes Cluster
+        run: make k8 # echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
+        env:
+          GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
+          K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
+        # - name: Apply Kubernetes configuration
+      #   run: kubectl apply -f misc/mysql.yaml
       - run: echo "🍏 This job's status is ${{ job.status }}."
-      # - name: Set KUBECONFIG environment variable
-      #   run: echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
-      # - name: Apply Kubernetes configuration
-      #   run: kubectl apply -f misc/mysql.yaml  
+      
