@@ -58,6 +58,13 @@ jobs:
           else
             echo "Homebrew is already installed"
           fi
+      - name: Wait for Homebrew installation
+        run: |
+          until command -v brew &> /dev/null
+          do
+            echo "Waiting for Homebrew to be available..."
+            sleep 5
+          done
       - name: Check and install kubelogin
         run: |
           if ! command -v kubelogin &> /dev/null
