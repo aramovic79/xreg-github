@@ -106,6 +106,7 @@ push: .push
 .push: .image
 	@echo "# Build and push Docker image"
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
+	@echo "Incrementing the version..."
 	@$(call increment_version)
 	@echo "New version: $(NEW_VERSION)"
 	@if [ -z "$(NEW_VERSION)" ]; then \
