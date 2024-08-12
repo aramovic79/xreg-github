@@ -108,8 +108,12 @@ push: .push
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
 	@$(call increment_version)
 	@echo "New version: $(NEW_VERSION)"
+	@if [ -z "$(NEW_VERSION)" ]; then \
+		NEW_VERSION=latest; \
+	fi
+	@echo "IMAGE TAG: $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)"
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
-	@docker push $(JF_URL)/$(IMAGE)
+	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
 
