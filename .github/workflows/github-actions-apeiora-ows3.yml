@@ -47,6 +47,15 @@ jobs:
           else
             echo "kubectl is already installed"
           fi
+      - name: Check and install Homebrew
+        run: |
+          if ! command -v brew &> /dev/null
+          then
+            echo "Homebrew could not be found, installing..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          else
+            echo "Homebrew is already installed"
+          fi
       - name: Check and install kubelogin
         run: |
           if ! command -v kubelogin &> /dev/null
