@@ -47,30 +47,30 @@ jobs:
           else
             echo "kubectl is already installed"
           fi
-      - name: Check and install Homebrew
+      - name: Check and install krew
         run: |
-          if ! command -v brew &> /dev/null
+          if ! command -v kubectl-krew &> /dev/null
           then
-            echo "Homebrew could not be found, installing..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            echo "krew could not be found, installing..."
+            (
+              set -x; cd "$(mktemp -d)" &&
+              OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+              ARCH="$(uname -m | sed 's/x86_64/amd64/' | sed 's/arm.*$/arm/')" &&
+              KREW="krew-${OS}_${ARCH}" &&
+              curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+              tar zxvf "${KREW}.tar.gz" &&
+              ./"${KREW}" install krew
+            )
+            export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
           else
-            echo "Homebrew is already installed"
+            echo "krew is already installed"
           fi
-      - name: Wait for Homebrew installation
-        run: |
-          until command -v brew &> /dev/null
-          do
-            echo "Waiting for Homebrew to be available..."
-            sleep 5
-          done
       - name: Check and install kubelogin
         run: |
           if ! command -v kubelogin &> /dev/null
           then
             echo "kubelogin could not be found, installing..."
-            brew install int128/kubelogin/kubelogin
+            kubectl krew install oidc-login
           else
             echo "kubelogin is already installed"
           fi
@@ -115,13 +115,7 @@ jobs:
       #     ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
       #     ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
       #     JF_URL: ${{ secrets.JF_URL }}
-      
-      - name: Publish on Kubernetes Cluster
-        run: make k8 # echo "export KUBECONFIG=.kube/kubeconfig-gardenlogin--ows3--ytdzgvnl69.yaml" >> $GITHUB_ENV
-        env:
-          GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
-          K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
-        # - name: Apply Kubernetes configuration
+      # - name: Apply Kubernetes configuration
       #   run: kubectl apply -f misc/mysql.yaml
       - run: echo "🍏 This job's status is ${{ job.status }}."
       
