@@ -106,17 +106,12 @@ jobs:
         run:
           if ! command -v gardenctl &> /dev/null
           then
-            if ! command -v gardenctl-v2 &> /dev/null
-            then
-              echo "gardenctl-v2 could not be found"
-            else
-              echo "gardenctl could not be found, installing..."
-            fi
+            echo "gardenctl could not be found"
           else
             echo "gardenctl is already installed"
             which gardenctl
           fi 
-          make k8
+          # make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
           K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
