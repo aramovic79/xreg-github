@@ -16,7 +16,7 @@ spec:
         run: xreg-server
     spec:
       containers:
-      - image: xreg-server
+      - image: common.repositories.cloud.sap/apeirora-ows3/xreg-server:1.5.0
         imagePullPolicy: IfNotPresent
         name: xreg-server
         command: [ "/server" ]

@@ -117,6 +117,7 @@ push: .push
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
+	# @envsubst < misc/deploy.yaml TODO: Set the NEW_VERSION into the deploy.yaml
 	@touch .push
 
 notest run: mysql server local
@@ -169,13 +170,17 @@ mysql-client: mysql waitformysql
 		echo "If it failed, make sure mysql is ready"
 
 k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
-	# @$(MAKE) push
+	@$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
-	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
 	@curl -s http://localhost:8000 > /dev/null
-	@export KUBECONFIG=$(K8_CLUSTER_PATH)
-	@kubectl get services -n ingress-nginx
-	@kubectl apply -f misc/mysql.yaml
+
+	# THE MAIN BLOCKER ATM: "Please visit the following URL in your browser manually"
+	
+	# @kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	# @export KUBECONFIG=$(K8_CLUSTER_PATH)
+	# @kubectl get services -n ingress-nginx
+	# @kubectl apply -f misc/mysql.yaml
+	# @kubectl apply -f misc/deploy.yaml
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
