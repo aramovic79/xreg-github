@@ -103,7 +103,7 @@ jobs:
             echo "make is already installed"
           fi
       - name: Apply K8 configs
-        run:
+        run: |
           if ! command -v gardenctl &> /dev/null
           then
             echo "gardenctl could not be found"
