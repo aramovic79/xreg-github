@@ -111,6 +111,7 @@ jobs:
               echo "gardenctl-v2 could not be found"
             else
               echo "gardenctl could not be found, installing..."
+            fi
           else
             echo "gardenctl is already installed"
             which gardenctl
