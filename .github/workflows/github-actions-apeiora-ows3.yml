@@ -16,8 +16,11 @@ jobs:
           then
             echo "brew could not be found, installing..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"
+            (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            # export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"
             echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
+            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/sbin:$PATH"' >> $GITHUB_ENV
             echo $PATH
             # /home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin
           else
