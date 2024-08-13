@@ -104,9 +104,10 @@ jobs:
           fi
       - name: Apply K8 configs
         run: |
-          if ! command -v gardenctl &> /dev/null
+          if ! command -v gardenctl-v2 &> /dev/null
           then
             echo "gardenctl could not be found"
+            echo $PATH
           else
             echo "gardenctl is already installed"
             which gardenctl
