@@ -62,6 +62,7 @@ jobs:
               ./"${KREW}" install krew
             )
             export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+            echo "krew successfully installed: $(PATH)"
           else
             echo "krew is already installed"
           fi
@@ -70,7 +71,8 @@ jobs:
           if ! command -v kubelogin &> /dev/null
           then
             echo "kubelogin could not be found, installing..."
-            kubectl krew install oidc-login
+            # kubectl krew install oidc-login
+            kubectl krew
           else
             echo "kubelogin is already installed"
           fi
