@@ -71,8 +71,7 @@ jobs:
           if ! command -v kubelogin &> /dev/null
           then
             echo "kubelogin could not be found, installing..."
-            kubectl krew install oidc-login
-            kubectl krew
+            kubectl-krew install oidc-login
           else
             echo "kubelogin is already installed"
           fi
