@@ -62,20 +62,20 @@ jobs:
               ./"${KREW}" install krew
             )
             export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-            echo "krew successfully installed: $(PATH)"
+            echo "krew successfully installed: $PATH"
           else
             echo "krew is already installed"
           fi
-      - name: Check and install kubelogin
-        run: |
-          if ! command -v kubelogin &> /dev/null
-          then
-            echo "kubelogin could not be found, installing..."
-            # kubectl krew install oidc-login
-            kubectl krew
-          else
-            echo "kubelogin is already installed"
-          fi
+      # - name: Check and install kubelogin
+      #   run: |
+      #     if ! command -v kubelogin &> /dev/null
+      #     then
+      #       echo "kubelogin could not be found, installing..."
+      #       kubectl krew install oidc-login
+      #       kubectl krew
+      #     else
+      #       echo "kubelogin is already installed"
+      #     fi
       - name: Check and install make
         run: |
           if ! command -v make &> /dev/null
@@ -99,7 +99,9 @@ jobs:
       - name: Set GCTL_SESSION_ID
         run: echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
       - name: Apply K8 configs
-        run: make k8
+        run: |
+          echo(cat ${{ secrets.GARDEN_OWS3_PATH }})
+          make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
           K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
