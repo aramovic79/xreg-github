@@ -28,7 +28,7 @@ jobs:
           then
             echo "gardenctl could not be found, installing..."
             brew install gardener/tap/gardenctl-v2
-            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew/bin}/gardenctl:$PATH"' >> $GITHUB_ENV
+            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
           else
             echo "gardenctl is already installed"
           fi          
@@ -104,6 +104,17 @@ jobs:
           fi
       - name: Apply K8 configs
         run:
+          if ! command -v gardenctl &> /dev/null
+          then
+            if ! command -v gardenctl-v2 &> /dev/null
+            then
+              echo "gardenctl-v2 could not be found"
+            else
+              echo "gardenctl could not be found, installing..."
+          else
+            echo "gardenctl is already installed"
+            which gardenctl
+          fi 
           make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
