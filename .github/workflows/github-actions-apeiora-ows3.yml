@@ -21,18 +21,6 @@ jobs:
             echo "make is already installed"
           fi
 
-      # - name: Check and install gardenlogin
-      #   run: |
-      #     if ! command -v gardenlogin &> /dev/null
-      #     then
-      #       echo "gardenlogin could not be found, installing..."
-      #       curl -Lo gardenlogin https://github.com/gardener/gardenlogin/releases/latest/download/gardenlogin-linux-amd64
-      #       chmod +x gardenlogin
-      #       sudo mv gardenlogin /usr/local/bin/
-      #     else
-      #       echo "gardenlogin is already installed"
-      #     fi
-
       - name: Check and install kubectl
         run: |
           if ! command -v kubectl &> /dev/null
@@ -57,7 +45,7 @@ jobs:
           fi
           echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
 
-      - name: Check and install brew, kubelogin and gardenctl; publish afterwards
+      - name: Check and install brew, gardenctl and kubelogin; publish afterwards
         run: |
           if ! command -v brew &> /dev/null
           then
@@ -80,23 +68,13 @@ jobs:
             echo "gardenctl is already installed"
           fi
 
-          # if ! command -v kubectl-krew &> /dev/null
-          # then
-          #   echo "krew could not be found, installing..."
-          #   (
-          #     set -x; cd "$(mktemp -d)" &&
-          #     OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
-          #     ARCH="$(uname -m | sed 's/x86_64/amd64/' | sed 's/arm.*$/arm/')" &&
-          #     KREW="krew-${OS}_${ARCH}" &&
-          #     curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
-          #     tar zxvf "${KREW}.tar.gz" &&
-          #     ./"${KREW}" install krew
-          #   )
-          #   export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-          #   echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $GITHUB_ENV
-          # else
-          #   echo "krew is already installed"
-          # fi
+          if ! command -v gardenlogin &> /dev/null
+          then
+            echo "gardenlogin could not be found, installing..."
+            brew install gardener/tap/gardenlogin
+          else
+            echo "gardenlogin is already installed"
+          fi
 
           if ! command -v kubelogin &> /dev/null
           then
