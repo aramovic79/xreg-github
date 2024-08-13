@@ -169,7 +169,7 @@ mysql-client: mysql waitformysql
 
 k8: .kube/kubeconfig-garden-ows3.yaml
 	@echo "Configuring gardenlogin..."
-	@KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl target garden sap-landscape-canary
+	@KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl target garden garden-ows3
 	@echo "Listing the namespaces available..."
 	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
 
