@@ -8,7 +8,7 @@ DBHOST     ?= 127.0.0.1
 DBPORT     ?= 3306
 DBUSER     ?= root
 DBPASSWORD ?= password
-IMAGE      ?= apeirora-ows3/xreg-server
+IMAGE      ?= xreg-server
 VERSION_FILE := version.txt
 
 # Get folders containing tests
