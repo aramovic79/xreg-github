@@ -174,6 +174,7 @@ k8: .kube/kubeconfig-garden-ows3.yaml
 	# @xdg-open http://localhost:8000
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	# @kubectl get services -n ingress-nginx
+	kubectl apply -f misc/mysql.yaml
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
