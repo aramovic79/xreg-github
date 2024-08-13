@@ -10,6 +10,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      # - name: Run tests using make
+      #   run: make tmptest
       - name: Check and install make
         run: |
           if ! command -v make &> /dev/null
@@ -58,7 +60,7 @@ jobs:
           else
             echo "brew is already installed"
           fi
-          
+
           if ! command -v gardenctl &> /dev/null
           then
             echo "gardenctl could not be found, installing..."
@@ -92,25 +94,11 @@ jobs:
           #   echo "lynx is already installed"
           # fi
 
-          make k8  
+          make k8
         env:
-            GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
-            K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
-      # - name: Run tests using make
-      #   run: make tmptest
-      # - name: List files in the repository
-      #   run: |
-      #     find ${{ github.workspace }} -type f
-      # - name: List test files
-      #   run: |
-      #     find . -name *_test.go -exec dirname {} \; | sort -u
-      # - name: Build and push Docker image
-      #   run: make push
-      #   env:
-      #     ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
-      #     ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-      #     JF_URL: ${{ secrets.JF_URL }}
-      # - name: Apply Kubernetes configuration
-      #   run: kubectl apply -f misc/mysql.yaml
+          GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
+          K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+          ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
+          JF_URL: ${{ secrets.JF_URL }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
-      

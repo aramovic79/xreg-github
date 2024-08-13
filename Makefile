@@ -112,6 +112,7 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
+	@echo "Artifactory url: $(JF_URL)"
 	@echo "IMAGE TAG: $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)"
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
