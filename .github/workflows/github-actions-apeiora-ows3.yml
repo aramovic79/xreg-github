@@ -86,14 +86,6 @@ jobs:
             echo "kubelogin is already installed"
           fi
 
-          # if ! command -v lynx &> /dev/null
-          # then
-          #   echo "lynx could not be found, installing..."
-          #   sudo apt-get update && sudo apt-get install -y lynx
-          # else
-          #   echo "lynx is already installed"
-          # fi
-
           make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
