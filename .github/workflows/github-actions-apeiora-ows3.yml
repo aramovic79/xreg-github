@@ -47,7 +47,7 @@ jobs:
           else
             echo "kubectl is already installed"
           fi
-      - name: Check and install krew
+      - name: Check and install krew and kubelogin
         run: |
           if ! command -v kubectl-krew &> /dev/null
           then
@@ -66,12 +66,11 @@ jobs:
           else
             echo "krew is already installed"
           fi
-      - name: Check and install kubelogin
-        run: |
+
           if ! command -v kubelogin &> /dev/null
           then
             echo "kubelogin could not be found, installing..."
-            kubectl-krew install oidc-login
+            kubectl krew install oidc-login
           else
             echo "kubelogin is already installed"
           fi
