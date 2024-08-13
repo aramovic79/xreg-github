@@ -86,6 +86,14 @@ jobs:
             echo "kubelogin is already installed"
           fi
 
+          # if ! command -v w3m &> /dev/null
+          # then
+          #   echo "w3m could not be found, installing..."
+          #   sudo apt-get update && sudo apt-get install -y w3m
+          # else
+          #   echo "w3m is already installed"
+          # fi
+
           make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
