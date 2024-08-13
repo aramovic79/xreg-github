@@ -168,13 +168,7 @@ mysql-client: mysql waitformysql
 		echo "If it failed, make sure mysql is ready"
 
 k8: .kube/kubeconfig-garden-ows3.yaml
-	@echo "Listing available gardens..."
-	@echo "GARDEN_OWS3_PATH=$(GARDEN_OWS3_PATH)"
-	@cat $(GARDEN_OWS3_PATH)
-	# @KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl get garden
-	# @echo "Targeting garden 'sap-landscape-canary'..."
-	# @KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl target garden sap-landscape-canary || (echo "Failed to target garden"; exit 1)
-	# @kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
