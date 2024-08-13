@@ -84,7 +84,7 @@ jobs:
           else
             echo "make is already installed"
           fi
-      - name: Check and install uuidgen
+      - name: Check and install uuidgen and then set GCTL_SESSION_ID
         run: |
           if ! command -v uuidgen &> /dev/null
           then
@@ -94,8 +94,8 @@ jobs:
           else
             echo "uuidgen is already installed"
           fi
-      - name: Set GCTL_SESSION_ID
-        run: echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
+
+          echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
       - name: Apply K8 configs
         run:
           make k8
