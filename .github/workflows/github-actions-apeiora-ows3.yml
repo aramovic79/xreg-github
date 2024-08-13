@@ -20,17 +20,19 @@ jobs:
           else
             echo "make is already installed"
           fi
-      - name: Check and install gardenlogin
-        run: |
-          if ! command -v gardenlogin &> /dev/null
-          then
-            echo "gardenlogin could not be found, installing..."
-            curl -Lo gardenlogin https://github.com/gardener/gardenlogin/releases/latest/download/gardenlogin-linux-amd64
-            chmod +x gardenlogin
-            sudo mv gardenlogin /usr/local/bin/
-          else
-            echo "gardenlogin is already installed"
-          fi
+
+      # - name: Check and install gardenlogin
+      #   run: |
+      #     if ! command -v gardenlogin &> /dev/null
+      #     then
+      #       echo "gardenlogin could not be found, installing..."
+      #       curl -Lo gardenlogin https://github.com/gardener/gardenlogin/releases/latest/download/gardenlogin-linux-amd64
+      #       chmod +x gardenlogin
+      #       sudo mv gardenlogin /usr/local/bin/
+      #     else
+      #       echo "gardenlogin is already installed"
+      #     fi
+
       - name: Check and install kubectl
         run: |
           if ! command -v kubectl &> /dev/null
@@ -42,8 +44,42 @@ jobs:
           else
             echo "kubectl is already installed"
           fi
-      - name: Check and install krew and kubelogin
+
+      - name: Check and install uuidgen and then set GCTL_SESSION_ID
         run: |
+          if ! command -v uuidgen &> /dev/null
+          then
+            echo "uuidgen could not be found, installing..."
+            sudo apt-get update
+            sudo apt-get install -y uuid-runtime
+          else
+            echo "uuidgen is already installed"
+          fi
+          echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
+
+      - name: Check and install brew, brew, kubelogin and gardenctl; publish afterwards
+        run: |
+          if ! command -v brew &> /dev/null
+          then
+            echo "brew could not be found, installing..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
+            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/sbin:$PATH"' >> $GITHUB_ENV
+          else
+            echo "brew is already installed"
+          fi
+          
+          if ! command -v gardenctl &> /dev/null
+          then
+            echo "gardenctl could not be found, installing..."
+            brew install gardener/tap/gardenctl-v2
+            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin/gardenctl:$PATH"' >> $GITHUB_ENV
+          else
+            echo "gardenctl is already installed"
+          fi
+
           if ! command -v kubectl-krew &> /dev/null
           then
             echo "krew could not be found, installing..."
@@ -69,38 +105,7 @@ jobs:
           else
             echo "kubelogin is already installed"
           fi
-      - name: Check and install uuidgen and then set GCTL_SESSION_ID
-        run: |
-          if ! command -v uuidgen &> /dev/null
-          then
-            echo "uuidgen could not be found, installing..."
-            sudo apt-get update
-            sudo apt-get install -y uuid-runtime
-          else
-            echo "uuidgen is already installed"
-          fi
-          echo "GCTL_SESSION_ID=$(uuidgen)" >> $GITHUB_ENV
-      - name: Check and install brew and gardenctl; publish afterwards
-        run: |
-          if ! command -v brew &> /dev/null
-          then
-            echo "brew could not be found, installing..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
-            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/sbin:$PATH"' >> $GITHUB_ENV
-          else
-            echo "brew is already installed"
-          fi
-           if ! command -v gardenctl &> /dev/null
-          then
-            echo "gardenctl could not be found, installing..."
-            brew install gardener/tap/gardenctl-v2
-            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin/gardenctl:$PATH"' >> $GITHUB_ENV
-          else
-            echo "gardenctl is already installed"
-          fi
+
           make k8  
         env:
             GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
