@@ -8,7 +8,7 @@ DBHOST     ?= 127.0.0.1
 DBPORT     ?= 3306
 DBUSER     ?= root
 DBPASSWORD ?= password
-IMAGE      ?= xreg-server
+IMAGE      ?= apeirora-ows3/xreg-server
 VERSION_FILE := version.txt
 
 # Get folders containing tests
@@ -113,7 +113,7 @@ push: .push
 		NEW_VERSION=latest; \
 	fi
 	@echo "IMAGE TAG: $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)"
-	@docker tag $(IMAGE):latest $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
