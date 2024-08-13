@@ -102,7 +102,7 @@ jobs:
             echo "gardenctl is already installed"
           fi
           make k8  
-          env:
+        env:
             GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
             K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
       # - name: Run tests using make
