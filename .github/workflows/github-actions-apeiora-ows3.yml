@@ -28,10 +28,7 @@ jobs:
           then
             echo "gardenctl could not be found, installing..."
             brew install gardener/tap/gardenctl-v2
-            echo 'export PATH="/usr/local/bin:$PATH"' >> $GITHUB_ENV
-            echo "This is where the gardenctl is installed:"
-            which gardenctl 
-            echo $PATH
+            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew/bin}/gardenctl:$PATH"' >> $GITHUB_ENV
           else
             echo "gardenctl is already installed"
           fi          
