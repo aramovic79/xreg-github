@@ -169,10 +169,10 @@ mysql-client: mysql waitformysql
 
 k8: .kube/kubeconfig-garden-ows3.yaml
 	@echo "Listing available gardens..."
-    @KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl get gardens
+	@KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl get gardens
 	@echo "Targeting garden 'sap-landscape-canary'..."
-    @KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl target garden sap-landscape-canary
-    @kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	@KUBECONFIG=$(GARDEN_OWS3_PATH) gardenctl target garden sap-landscape-canary
+	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
