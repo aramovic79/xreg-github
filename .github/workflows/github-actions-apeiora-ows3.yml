@@ -106,6 +106,7 @@ jobs:
             echo "kubelogin is already installed"
           fi
 
+          oidc-login --version
           make k8  
         env:
             GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
