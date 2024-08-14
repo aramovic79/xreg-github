@@ -176,7 +176,7 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	# THE MAIN BLOCKER ATM: "Please visit the following URL in your browser manually"
 	@cat $(K8_CLUSTER_PATH)
 	@echo "Ensure that api.canary.gardener.cloud.sap is accessible"
-	@ping -c 2 api.canary.gardener.cloud.sap
+	# @ping -c 2 api.canary.gardener.cloud.sap
 	@curl -I https://api.canary.gardener.cloud.sap
 	@echo "Now obtaining the namespaces"
 	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
