@@ -174,7 +174,12 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	# @w3m http://localhost:8000
 
 	# THE MAIN BLOCKER ATM: "Please visit the following URL in your browser manually"
+	@cat $(K8_CLUSTER_PATH)
+	@echo "Ensure that api.canary.gardener.cloud.sap is accessible"
+	@ping -c 2 api.canary.gardener.cloud.sap
+	@echo "Now obtaining the namespaces"
 	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	@echo "Automatically openning the localhost:8000"
 	@w3m http://localhost:8000
 
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
