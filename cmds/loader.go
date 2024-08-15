@@ -675,7 +675,7 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 		defer reg.Rollback()
 
 		// registry root attributes + ORD mandatory attributes; have to be lower case.
-		ErrFatalf(reg.SetSave("specversion", "0.5"))
+		ErrFatalf(reg.SetSave("specversion", "0.53"))
 		ErrFatalf(reg.SetSave("id", "SapFooRegistry"))
 		ErrFatalf(reg.SetSave("description", "Example based on ORD Reference App"))
 	}
