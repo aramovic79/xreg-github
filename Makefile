@@ -112,8 +112,6 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
-	@echo "Artifactory url: $(JF_URL)"
-	@echo "IMAGE TAG: $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)"
 	@docker tag $(IMAGE):latest $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
@@ -171,22 +169,9 @@ mysql-client: mysql waitformysql
 k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	# @$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
-	# @w3m http://localhost:8000
-
-	# THE MAIN BLOCKER ATM: "Please visit the following URL in your browser manually"
-	@cat $(K8_CLUSTER_PATH)
-	@echo "Ensure that api.canary.gardener.cloud.sap is accessible"
-	# @ping -c 2 api.canary.gardener.cloud.sap
-	@curl -I https://api.canary.gardener.cloud.sap
-	@echo "Now obtaining the namespaces"
-	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
-	@echo "Automatically openning the localhost:8000"
-	@w3m http://localhost:8000
-
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
-	# @kubectl get services -n ingress-nginx
-	# @kubectl apply -f misc/mysql.yaml
-	# @kubectl apply -f misc/deploy.yaml
+	@kubectl apply -f misc/mysql.yaml
+	@kubectl apply -f misc/deploy.yaml
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
