@@ -167,7 +167,7 @@ mysql-client: mysql waitformysql
 		echo "If it failed, make sure mysql is ready"
 
 k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
-	# @$(MAKE) push
+	@$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	

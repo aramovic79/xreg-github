@@ -86,13 +86,13 @@ jobs:
             echo "kubelogin is already installed"
           fi
 
-          if ! command -v w3m &> /dev/null
-          then
-            echo "w3m could not be found, installing..."
-            sudo apt-get update && sudo apt-get install -y w3m
-          else
-            echo "w3m is already installed"
-          fi
+          # if ! command -v w3m &> /dev/null
+          # then
+          #   echo "w3m could not be found, installing..."
+          #   sudo apt-get update && sudo apt-get install -y w3m
+          # else
+          #   echo "w3m is already installed"
+          # fi
 
           make k8
         env:
@@ -102,9 +102,9 @@ jobs:
           ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
           JF_URL: ${{ secrets.JF_URL }}
       
-      - name: Apply Kubernetes configuration
-        run: |
-          make k8-apply
-        env:
-          K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
+      # - name: Apply Kubernetes configuration
+      #   run: |
+      #     make k8-apply
+      #   env:
+      #     K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
