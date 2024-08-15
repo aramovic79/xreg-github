@@ -170,10 +170,7 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	# @$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
-	echo "KUBECONFIG variable value: $(KUBECONFIG)"
-	cat misc/mysql.yaml
-	cat $(K8_CLUSTER_PATH)
-	# @kubectl apply -f misc/mysql.yaml --validate=false
+	@kubectl apply -f misc/mysql.yaml --kubeconfig=$(K8_CLUSTER_PATH) --validate=false
 	# @kubectl apply -f misc/deploy.yaml --validate=false
 
 k3d: misc/mysql.yaml
