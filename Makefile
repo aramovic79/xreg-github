@@ -172,6 +172,7 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	echo "KUBECONFIG variable value: $(KUBECONFIG)"
 	cat misc/mysql.yaml
+	cat $(K8_CLUSTER_PATH)
 	# @kubectl apply -f misc/mysql.yaml --validate=false
 	# @kubectl apply -f misc/deploy.yaml --validate=false
 
