@@ -49,42 +49,42 @@ jobs:
 
       - name: Check and install brew, gardenctl and kubelogin; publish afterwards
         run: |
-          if ! command -v brew &> /dev/null
-          then
-            echo "brew could not be found, installing..."
-            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
-            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
-            echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/sbin:$PATH"' >> $GITHUB_ENV
-          else
-            echo "brew is already installed"
-          fi
+          # if ! command -v brew &> /dev/null
+          # then
+          #   echo "brew could not be found, installing..."
+          #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          #   (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/runner/.bashrc
+          #   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          #   echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin:$PATH"' >> $GITHUB_ENV
+          #   echo 'export PATH="${BREW_ROOT:-$HOME/linuxbrew/.linuxbrew}/sbin:$PATH"' >> $GITHUB_ENV
+          # else
+          #   echo "brew is already installed"
+          # fi
 
-          if ! command -v gardenctl &> /dev/null
-          then
-            echo "gardenctl could not be found, installing..."
-            brew install gardener/tap/gardenctl-v2
-            echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin/gardenctl:$PATH"' >> $GITHUB_ENV
-          else
-            echo "gardenctl is already installed"
-          fi
+          # if ! command -v gardenctl &> /dev/null
+          # then
+          #   echo "gardenctl could not be found, installing..."
+          #   brew install gardener/tap/gardenctl-v2
+          #   echo 'export PATH="${GARDENCTL_ROOT:-$HOME/linuxbrew/.linuxbrew}/bin/gardenctl:$PATH"' >> $GITHUB_ENV
+          # else
+          #   echo "gardenctl is already installed"
+          # fi
 
-          if ! command -v gardenlogin &> /dev/null
-          then
-            echo "gardenlogin could not be found, installing..."
-            brew install gardener/tap/gardenlogin
-          else
-            echo "gardenlogin is already installed"
-          fi
+          # if ! command -v gardenlogin &> /dev/null
+          # then
+          #   echo "gardenlogin could not be found, installing..."
+          #   brew install gardener/tap/gardenlogin
+          # else
+          #   echo "gardenlogin is already installed"
+          # fi
 
-          if ! command -v kubelogin &> /dev/null
-          then
-            echo "kubelogin could not be found, installing..."
-            brew install int128/kubelogin/kubelogin
-          else
-            echo "kubelogin is already installed"
-          fi
+          # if ! command -v kubelogin &> /dev/null
+          # then
+          #   echo "kubelogin could not be found, installing..."
+          #   brew install int128/kubelogin/kubelogin
+          # else
+          #   echo "kubelogin is already installed"
+          # fi
 
           # if ! command -v w3m &> /dev/null
           # then
@@ -94,7 +94,7 @@ jobs:
           #   echo "w3m is already installed"
           # fi
 
-          make k8
+          # make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
           K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
