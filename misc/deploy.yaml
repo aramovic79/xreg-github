@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - image: common.repositories.cloud.sap/apeirora-ows3/xreg-server:1.10.0
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: xreg-server
         command: [ "/server" ]
         args: [ "--recreate" ]

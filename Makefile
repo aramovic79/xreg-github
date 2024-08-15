@@ -10,6 +10,7 @@ DBUSER     ?= root
 DBPASSWORD ?= password
 IMAGE      ?= xreg-server
 VERSION_FILE := version.txt
+NAMESPACE := ingress-nginx
 
 # Get folders containing tests
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
@@ -172,9 +173,10 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	
 k8-apply: 
-	@curl -I http://localhost:8000
-	@kubectl apply -f misc/mysql.yaml --kubeconfig=$(K8_CLUSTER_PATH) --validate=false
-	@kubectl apply -f misc/deploy.yaml --kubeconfig=$(K8_CLUSTER_PATH) --validate=false
+	@echo "Delete $(IMAGE) service from the $(NAMESPACE) namespace first..."
+	@kubect delete service $(IMAGE) -n $(NAMESPACE)
+	@kubectl apply -f misc/mysql.yaml
+	@kubectl apply -f misc/deploy.yaml
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \
