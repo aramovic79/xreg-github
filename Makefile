@@ -11,6 +11,7 @@ DBPASSWORD ?= password
 IMAGE      ?= xreg-server
 VERSION_FILE := version.txt
 NAMESPACE := ingress-nginx
+EMAIL := albin.ramovic@sap.com
 
 # Get folders containing tests
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
@@ -171,6 +172,12 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	@$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
+	@kubectl create secret docker-registry apeirora-ows3-secret \
+		--docker-username=$(ARTIFACTORY_USER) \
+		--docker-password=$(ARTIFACTORY_TOKEN) \
+		--docker-email=$(EMAIL) \
+		--docker-server=$(JF_URL) \
+		--namespace=$(NAMESPACE)
 	
 k8-apply: 
 	@echo "Delete $(IMAGE) service from the $(NAMESPACE) namespace first..."
