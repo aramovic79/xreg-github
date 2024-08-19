@@ -90,8 +90,9 @@ jobs:
           then
             echo "w3m could not be found, installing..."
             sudo apt-get update && sudo apt-get install -y w3m
-            echo "home http://localhost:8000" >> ~/.w3m/config
-            cat ~/.w3m/config
+            which w3m
+            # echo "home http://localhost:8000" >> ~/.w3m/config
+            # cat ~/.w3m/config
           else
             echo "w3m is already installed"
           fi
