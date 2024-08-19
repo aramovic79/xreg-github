@@ -91,13 +91,13 @@ jobs:
             echo "w3m could not be found, installing..."
             sudo apt-get update && sudo apt-get install -y w3m
             which w3m
-            # echo "home http://localhost:8000" >> ~/.w3m/config
-            # cat ~/.w3m/config
+            echo "home http://localhost:8000" >> /usr/bin/w3m/config
+            cat /usr/bin/w3m/config
           else
             echo "w3m is already installed"
           fi
 
-          make k8
+          # make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
           K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
