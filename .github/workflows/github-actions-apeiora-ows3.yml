@@ -86,7 +86,7 @@ jobs:
             echo "kubelogin is already installed"
           fi
 
-          # make k8
+          make k8
         env:
           GARDEN_OWS3_PATH: ${{ secrets.GARDEN_OWS3_PATH }}
           K8_CLUSTER_PATH: ${{ secrets.K8_CLUSTER_PATH }}
