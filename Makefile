@@ -114,9 +114,13 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
+	@echo "Creating tag statement 1..."
 	@docker tag $(IMAGE):$(NEW_VERSION) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@echo "Creating tag statement 2..."
 	@docker tag $(IMAGE):$(NEW_VERSION) $(JF_URL)/$(IMAGE):latest
+	@echo "Push statement 1..."
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@echo "Push statement 2..."
 	@docker push $(JF_URL)/$(IMAGE):latest
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
