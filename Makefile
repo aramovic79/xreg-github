@@ -171,7 +171,7 @@ mysql-client: mysql waitformysql
 k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	# @$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
-	# TODO: Solve "Please visit the following URL in your browser manually: http://localhost:8000"
+	# TODO: Solve this blocker "Please visit the following URL in your browser manually: http://localhost:8000"
 	# kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	# @kubectl create secret docker-registry apeirora-ows3-secret \
