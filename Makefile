@@ -116,6 +116,7 @@ push: .push
 	fi
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
+	@echo "Latest docker image pushed"
 	# @docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	# @docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
