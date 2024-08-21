@@ -117,8 +117,8 @@ push: .push
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
 	@echo "Latest docker image pushed"
-	# @docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
-	# @docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
 
@@ -173,10 +173,10 @@ mysql-client: mysql waitformysql
 
 k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	@$(MAKE) push
-	# @gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
+	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 	# TODO: Solve this blocker "Please visit the following URL in your browser manually: http://localhost:8000"
 	# kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
-	# @export KUBECONFIG=$(K8_CLUSTER_PATH)
+	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	# @kubectl create secret docker-registry apeirora-ows3-secret \
 	# 	--docker-username=$(ARTIFACTORY_USER) \
 	# 	--docker-password=$(ARTIFACTORY_TOKEN) \
