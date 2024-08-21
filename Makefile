@@ -185,8 +185,8 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	
 k8-apply: 
 	@echo "Delete $(IMAGE) service from the $(NAMESPACE) namespace first..."
-	@kubect delete deployment $(IMAGE) -n $(NAMESPACE)
-	@kubect delete service $(IMAGE) -n $(NAMESPACE)
+	# @kubectl apply -f misc/deploy.yaml --force
+	@kubectl delete -f misc/deploy.yaml
 	@kubectl apply -f misc/deploy.yaml
 
 k3d: misc/mysql.yaml
