@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
       - name: apeirora-ows3-secret
       containers:
-      - image: apeirora-ows3.common.repositories.cloud.sap/xreg-server:latest
+      - image: apeirora-ows3.common.repositories.cloud.sap/xreg-server
         imagePullPolicy: Always
         name: xreg-server
         command: [ "/server" ]
@@ -41,6 +41,8 @@ metadata:
   name: xreg-server
 spec:
   type: LoadBalancer
+  externalIPs:
+  - 130.214.104.190
   ports:
   - port: 8080
     targetPort: 8080

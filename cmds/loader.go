@@ -661,7 +661,7 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 	var err error
 	log.VPrintf(1, "Loading registry '%s'", "sap.foo registry")
 	if reg == nil {
-		reg, err = registry.FindRegistry(nil, "SapFooRegistryLatest")
+		reg, err = registry.FindRegistry(nil, "SapFooLatestRegistry")
 		ErrFatalf(err)
 
 		if reg != nil {
@@ -669,14 +669,14 @@ func LoadOrdSample(reg *registry.Registry) *registry.Registry {
 			return reg
 		}
 
-		reg, err = registry.NewRegistry(nil, "SapFooRegistryLatest")
+		reg, err = registry.NewRegistry(nil, "SapFooLatestRegistry")
 		ErrFatalf(err, "Error creating new registry: %s", err)
 
 		defer reg.Rollback()
 
 		// registry root attributes + ORD mandatory attributes; have to be lower case.
 		ErrFatalf(reg.SetSave("specversion", "0.5"))
-		ErrFatalf(reg.SetSave("id", "SapFooRegistryLatest"))
+		ErrFatalf(reg.SetSave("id", "SapFooLatestRegistry"))
 		ErrFatalf(reg.SetSave("description", "Example based on ORD Reference App"))
 	}
 
