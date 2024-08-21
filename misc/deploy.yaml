@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
       - name: apeirora-ows3-secret
       containers:
-      - image: apeirora-ows3.common.repositories.cloud.sap/xreg-server
+      - image: apeirora-ows3.common.repositories.cloud.sap/xreg-server:latest
         imagePullPolicy: Always
         name: xreg-server
         command: [ "/server" ]
