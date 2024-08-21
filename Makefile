@@ -114,10 +114,10 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
-	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
-	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
+	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
 

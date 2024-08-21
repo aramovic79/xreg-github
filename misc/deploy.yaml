@@ -41,8 +41,7 @@ metadata:
   name: xreg-server
 spec:
   type: LoadBalancer
-  externalIPs:
-  - 130.214.104.190
+  loadBalancerIP: 130.214.104.190
   ports:
   - port: 8080
     targetPort: 8080
