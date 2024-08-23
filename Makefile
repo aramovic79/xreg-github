@@ -110,15 +110,16 @@ push: .push
 	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
 	@echo "Incrementing the version..."
 	@$(call increment_version)
-	@echo "New version: $(NEW_VERSION)"
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
+	
+	@echo "Delete the latest tag because overwrite is not working in Artifactory"
 	@curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "https://$(JF_URL)/v2/$(IMAGE)/manifests/latest"
-	# @curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "$(JF_URL)/v2/$(IMAGE)/manifests/latest"	
+	@echo "Push the latest docker image"
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
-	@echo "Latest docker image pushed"
+	@echo "Push the $(NEW_VERSION) docker image"
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
 	@echo $(NEW_VERSION) > $(VERSION_FILE)
