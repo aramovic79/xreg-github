@@ -114,6 +114,7 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
+	@curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "$(JF_URL)/v2/$(IMAGE)/manifests/latest"	
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
 	@echo "Latest docker image pushed"
@@ -175,7 +176,7 @@ k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
 	@$(MAKE) push
 	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
 	# TODO: Solve this blocker "Please visit the following URL in your browser manually: http://localhost:8000"
-	# kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	@kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
 	@export KUBECONFIG=$(K8_CLUSTER_PATH)
 	# @kubectl create secret docker-registry apeirora-ows3-secret \
 	# 	--docker-username=$(ARTIFACTORY_USER) \
