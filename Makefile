@@ -8,9 +8,25 @@ DBHOST     ?= 127.0.0.1
 DBPORT     ?= 3306
 DBUSER     ?= root
 DBPASSWORD ?= password
-IMAGE      ?= duglin/xreg-server
+IMAGE      ?= xreg-server
+VERSION_FILE := version.txt
+NAMESPACE := ingress-nginx
+EMAIL := albin.ramovic@sap.com
 
+# Get folders containing tests
 TESTDIRS := $(shell find . -name *_test.go -exec dirname {} \; | sort -u)
+
+# Read the current version from the file
+CURRENT_VERSION := $(shell cat $(VERSION_FILE))
+
+# Increment the (minor) version number
+define increment_version
+	$(eval MAJOR := $(word 1,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval MINOR := $(word 2,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval PATCH := $(word 3,$(subst ., ,$(CURRENT_VERSION))))
+	$(eval NEW_MINOR := $(shell echo $$(($(MINOR) + 1))))
+	$(eval NEW_VERSION := $(MAJOR).$(NEW_MINOR).$(PATCH))
+endef
 
 ifdef XR_SPEC
   # If pointing to local spec then make sure "docker run" uses it too
@@ -18,28 +34,32 @@ ifdef XR_SPEC
 endif
 
 cmds: .cmds
-.cmds: server xr
+.cmds: server
 	@touch .cmds
 
 qtest: .test
 
-test: .test .testimage
+tmptest: 
+	@echo "# Testing: tmp change"
+	@go clean -testcache
+	@echo "go test -failfast ./registry"
+	@go test -failfast ./registry
+	
+test: .test
 .test: export TESTING=1
 .test: .cmds */*test.go
-	@make --no-print-directory mysql waitformysql
-	@echo
 	@echo "# Testing"
 	@go clean -testcache
 	@echo "go test -failfast $(TESTDIRS)"
 	@for s in $(TESTDIRS); do if ! go test -failfast $$s; then exit 1; fi; done
-	@# go test -failfast $(TESTDIRS)
+	@go test -failfast $(TESTDIRS)
 	@echo
 	@echo "# Run again w/o deleting the Registry after each one"
 	@go clean -testcache
 	NO_DELETE_REGISTRY=1 go test -failfast $(TESTDIRS)
 	@touch .test
 
-unittest:
+.unittest:
 	go test -failfast ./registry
 
 server: cmds/server.go cmds/loader.go registry/*
@@ -47,10 +67,10 @@ server: cmds/server.go cmds/loader.go registry/*
 	@echo "# Building server"
 	go build $(BUILDFLAGS) -o $@ cmds/server.go cmds/loader.go
 
-xr: cmds/xr*.go registry/*
+xr: cmds/xr/xr*.go registry/*
 	@echo
 	@echo "# Building CLI"
-	go build $(BUILDFLAGS) -o $@ cmds/xr*.go
+	go build $(BUILDFLAGS) -o $@ cmds/xr/xr*.go
 
 image: .image
 .image: server misc/Dockerfile misc/waitformysql misc/Dockerfile-all \
@@ -63,9 +83,10 @@ ifdef XR_SPEC
 	@mkdir -p .spec
 	cp -r $(XR_SPEC)/* .spec
 endif
-	@misc/errOutput docker build -f misc/Dockerfile -t $(IMAGE) --no-cache .
+	@misc/errOutput docker build --progress=plain -f misc/Dockerfile -t $(IMAGE) --no-cache .
 	@misc/errOutput docker build -f misc/Dockerfile-all -t $(IMAGE)-all \
 		--no-cache .
+	@echo "# Image $(IMAGE) successfully created"
 ifdef XR_SPEC
 	@rm -rf .spec
 endif
@@ -85,8 +106,23 @@ testimage: .testimage
 
 push: .push
 .push: .image
-	docker push $(IMAGE)
-	docker push $(IMAGE)-all
+	@echo "# Build and push Docker image"
+	@docker login --username=$(ARTIFACTORY_USER) --password=$(ARTIFACTORY_TOKEN) $(JF_URL)
+	@echo "Incrementing the version..."
+	@$(call increment_version)
+	@if [ -z "$(NEW_VERSION)" ]; then \
+		NEW_VERSION=latest; \
+	fi
+	
+	@echo "Delete the latest tag because overwrite is not working in Artifactory"
+	@curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "https://$(JF_URL)/v2/$(IMAGE)/manifests/latest"
+	@echo "Push the latest docker image"
+	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
+	@docker push $(JF_URL)/$(IMAGE):latest
+	@echo "Push the $(NEW_VERSION) docker image"
+	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@docker push $(JF_URL)/$(IMAGE):$(NEW_VERSION)
+	@echo $(NEW_VERSION) > $(VERSION_FILE)
 	@touch .push
 
 notest run: mysql server local
@@ -137,6 +173,24 @@ mysql-client: mysql waitformysql
 		--user $(DBUSER) --password="$(DBPASSWORD)" \
 		--protocol tcp || \
 		echo "If it failed, make sure mysql is ready"
+
+k8: $(GARDEN_OWS3_PATH) $(K8_CLUSTER_PATH)
+	@$(MAKE) push
+	@gardenctl config set-garden sap-landscape-canary --kubeconfig "$(GARDEN_OWS3_PATH)"
+	# TODO: Solve this blocker "Please visit the following URL in your browser manually: http://localhost:8000"
+	# @kubectl --kubeconfig "$(K8_CLUSTER_PATH)" get namespaces
+	@export KUBECONFIG=$(K8_CLUSTER_PATH)
+	# @kubectl create secret docker-registry apeirora-ows3-secret \
+	# 	--docker-username=$(ARTIFACTORY_USER) \
+	# 	--docker-password=$(ARTIFACTORY_TOKEN) \
+	# 	--docker-email=$(EMAIL) \
+	# 	--docker-server=$(JF_URL) \
+	# 	--namespace=$(NAMESPACE)
+	
+k8-apply: 
+	@echo "Delete $(IMAGE) service from the $(NAMESPACE) namespace first..."
+	@kubectl delete -f misc/deploy.yaml
+	@kubectl apply -f misc/deploy.yaml
 
 k3d: misc/mysql.yaml
 	@k3d cluster list | grep xreg > /dev/null || \

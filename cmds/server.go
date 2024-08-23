@@ -52,15 +52,16 @@ func InitDB() {
 	}
 
 	if reg == nil {
-		reg = LoadDirsSample(reg)
-		LoadEndpointsSample(nil)
-		LoadMessagesSample(nil)
-		LoadSchemasSample(nil)
-		LoadAPIGuru(nil, "APIs-guru", "openapi-directory")
-		LoadDocStore(nil)
-		if os.Getenv("XR_LOAD_LARGE") != "" {
-			go LoadLargeSample(nil)
-		}
+		reg = LoadOrdSample(reg)
+		// reg = LoadDirsSample(reg)
+		// LoadEndpointsSample(nil)
+		// LoadMessagesSample(nil)
+		// LoadSchemasSample(nil)
+		// reg = LoadAPIGuru(nil, "APIs-guru", "openapi-directory")
+		// reg = LoadDocStore(reg)
+		// if os.Getenv("XR_LOAD_LARGE") != "" {
+		// 	go LoadLargeSample(nil)
+		// }
 	}
 
 	if reg == nil {
@@ -84,7 +85,7 @@ func main() {
 	}
 
 	doDelete = flag.Bool("delete", false, "Delete DB and exit")
-	doRecreate = flag.Bool("recreate", false, "Recreate DB, then run")
+	doRecreate = flag.Bool("recreate", true, "Recreate DB, then run")
 	doVerify = flag.Bool("verify", false, "Exit after loading - for testing")
 	flag.IntVar(&Verbose, "v", Verbose, "Verbose level")
 	flag.Parse()
