@@ -114,7 +114,7 @@ push: .push
 	@if [ -z "$(NEW_VERSION)" ]; then \
 		NEW_VERSION=latest; \
 	fi
-	@curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "https://apeirora-ows3.common.repositories.cloud.sap/v2/xreg-server/manifests/latest"
+	@curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "https://$(JF_URL)/v2/$(IMAGE)/manifests/latest"
 	# @curl -X DELETE -u "$(ARTIFACTORY_USER):$(ARTIFACTORY_TOKEN)" "$(JF_URL)/v2/$(IMAGE)/manifests/latest"	
 	@docker tag $(IMAGE) $(JF_URL)/$(IMAGE):latest 
 	@docker push $(JF_URL)/$(IMAGE):latest
