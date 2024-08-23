@@ -10,8 +10,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      # - name: Run tests using make
-      #   run: make tmptest
+      - name: Run tests using make
+        run: make tmptest
       - name: Check and install make
         run: |
           if ! command -v make &> /dev/null
